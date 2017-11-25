@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "react-credit-card": "^0.20.0"
   },
   "devDependencies": {},
   "scripts": {
