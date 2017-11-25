@@ -1,6 +1,6 @@
 const React = require('react')
 
-const DonationOption = (props) => {
+const OptionsPage = (props) => {
     var typeHtml = [
         { dtype: 'One-time', value: '1' },
         { dtype: 'Monthly', value: '2' }
@@ -40,7 +40,7 @@ const DonationOption = (props) => {
     )
 }
 
-const UserDetails = (props) => {
+const DetailsPage = (props) => {
     var formHtml = [
         { label: 'Name', name: 'name', required: true },
         { label: 'Address', name: 'address', required: false },
@@ -70,7 +70,7 @@ const UserDetails = (props) => {
     )
 }
 
-const PaymentInformation = (props) => {
+const PaymentPage = (props) => {
     return (
         <form action="/donation/payment" method="post">
             <div><a href="/donation/details">Back</a></div>
@@ -99,7 +99,7 @@ const PaymentInformation = (props) => {
     )
 }
 
-const DonationConfirmation = (props) => {
+const ConfirmationPage = (props) => {
     return (
         <div>
             <div>Thanks for your donation.</div>
@@ -109,10 +109,10 @@ const DonationConfirmation = (props) => {
 }
 
 const Steps = {
-    'options': DonationOption,
-    'details': UserDetails,
-    'payment': PaymentInformation,
-    'confirmation': DonationConfirmation
+    'options': OptionsPage,
+    'details': DetailsPage,
+    'payment': PaymentPage,
+    'confirmation': ConfirmationPage
 }
 
 exports.Steps = Steps

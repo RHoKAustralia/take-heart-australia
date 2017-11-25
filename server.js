@@ -30,13 +30,26 @@ app.get('/', (req, res) => {
 })
 
 const DonationPages = require('./pages/donation.jsx')
-const StepActions = require('./src/donation.js')
+const DonationActions = require('./src/donation.js')
 
 app.get('/donation/:step', (req, res) => {
   var step = req.params.step
   if (step in DonationPages.Steps) {
     res.set('content-type', 'text/html')
-    const element = react.createElement(DonationPages.Steps[step], {form: req.session.form || {}})
+    var form = req.session.form || {steps: [false, false, false, false]}
+
+    var targetStepIndex = DonationActions.StepsIndex[step]
+    var redirectIndex = DonationActions.ensureSteps(form, targetStepIndex)
+    if (redirectIndex < targetStepIndex) {
+      res.redirect(DonationActions.URLs[DonationActions.IndexToSteps[redirectIndex]])
+    }
+
+    // clear session when finished
+    if (step == 'confirmation') {
+      req.session.form = undefined
+    }
+
+    const element = react.createElement(DonationPages.Steps[step], {form: form})
     const stream = ReactDOMServer.renderToStaticNodeStream(element)
     stream.pipe(res)
   } else {
@@ -47,8 +60,8 @@ app.get('/donation/:step', (req, res) => {
 
 app.post('/donation/:step', (req, res) => {
   var step = req.params.step
-  if (step in StepActions.Actions) {
-    StepActions.Actions[step](req, res)
+  if (step in DonationActions.Actions) {
+    DonationActions.Actions[step](req, res)
   } else {
     res.status(404).send('Not found')
   }
