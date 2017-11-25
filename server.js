@@ -4,8 +4,11 @@ const ReactDOMServer = require('react-dom/server')
 const express = require('express')
 require('node-jsx').install()
 
+const morgan = require('morgan')
+
 const app = express()
 
+app.use(morgan('combined'))
 app.use(express.static(`${__dirname}/public`))
 
 const {MyComponent} = require('./blah.jsx')
@@ -52,5 +55,6 @@ app.get('/dbtest', withDb, (req, res, next) => {
   })
 })
 
-require('http').createServer(app).listen(3939)
-console.log('server listening on http://localhost:3939')
+const port = process.env.PORT || 3939
+require('http').createServer(app).listen(port)
+console.log(`server listening on http://localhost:${port}/`)
