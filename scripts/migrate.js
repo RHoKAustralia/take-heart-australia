@@ -6,11 +6,10 @@ const postgrator = new Postgrator({
  // Driver: must be pg, mysql, or mssql
  driver: 'pg',
  // Database connection config
- host: '127.0.0.1',
- port: 5432,
- database: 'databasename',
- username: 'username',
- password: 'password',
+ host: process.env.PGHOST || '127.0.0.1',
+ database: process.env.DBNAME || 'thadev',
+ username: process.env.PGUSER ,
+ password: process.env.PGPASSWORD,
  // Schema table name. Optional. Default is schemaversion
  schemaTable: 'schemaversion'
 });
