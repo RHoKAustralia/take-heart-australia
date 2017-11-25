@@ -4,8 +4,11 @@ const ReactDOMServer = require('react-dom/server')
 const express = require('express')
 require('node-jsx').install()
 
+const morgan = require('morgan')
+
 const app = express()
 
+app.use(morgan('combined'))
 app.use(express.static(`${__dirname}/public`))
 
 const {MyComponent} = require('./blah.jsx')
