@@ -1,28 +1,70 @@
 const react = require('react')
 const ReactDOMServer = require('react-dom/server')
+const bodyParser = require('body-parser')
 
 const express = require('express')
+const session = require('express-session')
 require('node-jsx').install()
 
 const morgan = require('morgan')
 
 const app = express()
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60000 }
+}))
+
 app.use(morgan('combined'))
 app.use(express.static(`${__dirname}/public`))
 
-const {MyComponent} = require('./blah.jsx')
-
-app.get('/reactdemo', (req, res) => {
-  const elem = react.createElement(MyComponent, {name:'fred', items:['a', 'b']})
-  const stream = ReactDOMServer.renderToStaticNodeStream(elem)
-
-  res.set('content-type', 'text/html')
-  stream.pipe(res)
-})
-
 app.get('/', (req, res) => {
   res.send('oh hai')
+})
+
+const DonationPages = require('./pages/donation.jsx')
+const DonationActions = require('./src/donation.js')
+
+app.get('/donation/:step', (req, res) => {
+  var step = req.params.step
+  if (step in DonationPages.Steps) {
+    res.set('content-type', 'text/html')
+    var form = req.session.form || {steps: [false, false, false, false]}
+
+    var targetStepIndex = DonationActions.StepsIndex[step]
+    var redirectIndex = DonationActions.ensureSteps(form, targetStepIndex)
+    if (redirectIndex < targetStepIndex) {
+      res.redirect(DonationActions.URLs[DonationActions.IndexToSteps[redirectIndex]])
+    }
+
+    // clear session when finished
+    if (step == 'confirmation') {
+      req.session.form = undefined
+    }
+
+    const element = react.createElement(DonationPages.Steps[step], {form: form})
+    const stream = ReactDOMServer.renderToStaticNodeStream(element)
+    stream.pipe(res)
+  } else {
+    // 404 page
+    res.status(404).send('Not found')
+  }
+})
+
+app.post('/donation/:step', (req, res) => {
+  var step = req.params.step
+  if (step in DonationActions.Actions) {
+    DonationActions.Actions[step](req, res)
+  } else {
+    res.status(404).send('Not found')
+  }
 })
 
 // createdb tha
