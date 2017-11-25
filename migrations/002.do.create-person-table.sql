@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS Person
     Occupation VARCHAR(100),
     EventId VARCHAR(100),
     Profiles JSONB,
-    Data JSONB
+    PersonData JSONB
 );
