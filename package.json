@@ -1,12 +1,21 @@
 {
   "name": "take-heart-australia",
   "version": "1.0.0",
-  "engines": {
-    "node": ">=8.9.1"
-  },
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.2",
+    "form-data": "^2.3.1",
+    "node-fetch": "^1.7.3",
+    "query-string": "^5.0.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^7.1.6",
+    "cssnano": "^3.10.0",
+    "gulp": "^3.9.1",
+    "gulp-postcss": "^7.0.0",
+    "gulp-sass": "^3.1.0",
     "babel-preset-react": "^6.24.1",
     "babelify": "^8.0.0",
     "body-parser": "^1.18.2",
@@ -21,7 +30,6 @@
     "react-dom": "^16.1.1",
     "sql-template-strings": "^2.2.2"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run migrate && node server.js",
