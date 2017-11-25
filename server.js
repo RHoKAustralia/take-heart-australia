@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 
 app.get('/training', function(req, res) {
   const apiUrl = 'https://www.eventbriteapi.com/v3/users/me/owned_events';
-  const query = { token: 'QHZIGQMTINSSRO2NP7QU' };
+  const query = { token: 'QHZIGQMTINSSRO2NP7QU', status: 'live' };
 
   const url = `${apiUrl}?${queryString.stringify(query)}`;
   const ids = fetch(url)
