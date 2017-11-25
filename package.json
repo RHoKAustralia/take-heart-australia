@@ -8,7 +8,9 @@
     "express": "^4.16.2",
     "form-data": "^2.3.1",
     "node-fetch": "^1.7.3",
-    "query-string": "^5.0.1"
+    "query-string": "^5.0.1",
+    "pg": "^7.4.0",
+    "postgrator": "^3.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.6",
@@ -24,8 +26,6 @@
     "express-session": "^1.15.6",
     "morgan": "^1.9.0",
     "node-jsx": "^0.13.3",
-    "pg": "^7.4.0",
-    "postgrator": "^3.0.0",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "sql-template-strings": "^2.2.2"
