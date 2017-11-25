@@ -55,5 +55,6 @@ app.get('/dbtest', withDb, (req, res, next) => {
   })
 })
 
-require('http').createServer(app).listen(3939)
-console.log('server listening on http://localhost:3939')
+const port = process.env.PORT || 3939
+require('http').createServer(app).listen(port)
+console.log(`server listening on http://localhost:${port}/`)
