@@ -7,5 +7,7 @@ CREATE TABLE IF NOT EXISTS Person
     ContactEmail VARCHAR(100),
     Age VARCHAR(50),
     Occupation VARCHAR(100),
-    EventId VARCHAR(100)
+    EventId VARCHAR(100),
+    Profiles JSONB,
+    Data JSONB
 );
