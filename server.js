@@ -1,10 +1,12 @@
 const react = require('react')
 const ReactDOMServer = require('react-dom/server')
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 
 const express = require('express')
-var session = require('express-session')
+const session = require('express-session')
 require('node-jsx').install()
+
+const morgan = require('morgan')
 
 const app = express()
 
@@ -20,6 +22,7 @@ app.use(session({
   cookie: { maxAge: 60000 }
 }))
 
+app.use(morgan('combined'))
 app.use(express.static(`${__dirname}/public`))
 
 const {MyComponent} = require('./blah.jsx')
@@ -61,6 +64,36 @@ app.post('/donation/:step', (req, res) => {
   }
 })
 
+// createdb tha
+const sql = require('sql-template-strings')
+const pg = require('pg')
+const pool = new pg.Pool({
+  database: 'tha'
+})
 
-require('http').createServer(app).listen(3939)
-console.log('server listening on http://localhost:3939')
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err)
+})
+
+const withDb = (req, res, next) => {
+  pool.connect((err, client, done) => {
+    if (err) return next(err)
+    req.db = client
+    const finished = () => { if (done) { done(); done = null } }
+    res.on('finish', finished)
+    res.on('close', finished)
+    next()
+  })
+}
+
+app.get('/dbtest', withDb, (req, res, next) => {
+  req.db.query(sql`SELECT NOW()`, (err, result) => {
+    if (err) return next(err)
+    //console.log(err, result.rows[0])
+    res.send(result.rows[0])
+  })
+})
+
+const port = process.env.PORT || 3939
+require('http').createServer(app).listen(port)
+console.log(`server listening on http://localhost:${port}/`)
