@@ -118,30 +118,33 @@ const DetailsPage = (props) => {
 
 const PaymentPage = (props) => {
     return (
-        <form action="/donation/payment" method="post">
-            <div><a href="/donation/details">Back</a></div>
-            <div>Please provide us your peyment details</div>
-            <div>
+        <div>
+            <div>{props.message}</div>
+            <form action="/donation/payment" method="post">
+                <div><a href="/donation/details">Back</a></div>
+                <div>Please provide us your peyment details</div>
                 <div>
-                    <div>Name on card</div>
-                    <div><input type="text" name="card_name" /></div>
+                    <div>
+                        <div>Name on card</div>
+                        <div><input type="text" name="card_name" /></div>
+                    </div>
+                    <div>
+                        <div>Card number</div>
+                        <div><input type="number" name="card_number" /></div>
+                    </div>
+                    <div>
+                        <div>Expire date</div>
+                        <div><input type="number" name="expire_month" /></div>
+                        <div><input type="number" name="expire_year" /></div>
+                    </div>
+                    <div>
+                        <div>CVV</div>
+                        <div><input type="text" name="cvv" /></div>
+                    </div>
                 </div>
-                <div>
-                    <div>Card number</div>
-                    <div><input type="text" name="card_number" /></div>
-                </div>
-                <div>
-                    <div>Expire date</div>
-                    <div><input type="text" name="expire_month" /></div>
-                    <div><input type="text" name="expire_year" /></div>
-                </div>
-                <div>
-                    <div>CVV</div>
-                    <div><input type="text" name="cvv" /></div>
-                </div>
-            </div>
-            <div><button type="submit">Confirm</button></div>
-        </form>
+                <div><button type="submit">Confirm</button></div>
+            </form>
+        </div>
     )
 }
 
