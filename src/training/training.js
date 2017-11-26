@@ -5,12 +5,36 @@ import 'react-select/dist/react-select.css';
 import { compose, withProps, withStateHandlers } from 'recompose';
 import EventbriteEmbed from './EventbriteEmbed';
 
-const a = filters => {
+const getEventIdsFromFilter2 = filters => {
   // if all filters are falsy, don't show anything
-  const allFiltersEmpty = !filters.some(Boolean);
+  const allFiltersEmpty = !Object.values(filters).some(Boolean);
   if (allFiltersEmpty) {
     return null;
   }
+
+  return window.eventsData
+    // filter the eventData based on the filters object passed in
+    .filter(eventData => {
+
+      const getFilterResultFromFilterKey = key => {
+        const toCompareValue = filters[key];
+        // if the value of the filter is blank
+        // we assume that the filter is not yet selected, so return true
+        if (!toCompareValue) {
+          return true;
+        }
+        console.log('inside each filter key', toCompareValue, eventData[key], eventData[key] === toCompareValue);
+        return eventData[key] === toCompareValue;
+      };
+
+      console.log('FILTERING EVENTS DATA, inside each event data', eventData, 'result:', Object.keys(filters).map(getFilterResultFromFilterKey).every(Boolean))
+      
+      return Object.keys(filters).map(getFilterResultFromFilterKey).every(Boolean)
+    })
+    .map(filteredEventData => {
+      console.log('FILTERED EVENT DATA', filteredEventData)
+      return filteredEventData.id
+    });
 };
 
 const getEventIdsFromFilter = ({ region }) => {
@@ -18,6 +42,7 @@ const getEventIdsFromFilter = ({ region }) => {
 };
 
 const getEventbriteEmbed = id => {
+  console.log('get event brite embed', id);
   return (
     <li key={id}>
       <EventbriteEmbed id={id} />
@@ -35,16 +60,23 @@ const createDropdownOptions = keyName => {
   });
 };
 
-const EventApp = ({ applied, applyFilter, selected, dropdownSelectRegion, setShownFilters }) => {
+const EventApp = ({ appliedFilters, applyFilter, selectedFilters, dropdownSelectRegion }) => {
   const regionOptions = createDropdownOptions('region');
+  const eventsId = getEventIdsFromFilter2(appliedFilters);
+  console.log('events id', eventsId);
   return (
     <div>
       <label>
         State:
-        <Select name="state-select" value={selected.region} onChange={dropdownSelectRegion} options={regionOptions} />
+        <Select
+          name="state-select"
+          value={selectedFilters.region}
+          onChange={dropdownSelectRegion}
+          options={regionOptions}
+        />
       </label>
       <button onClick={applyFilter}>Apply</button>
-      <ul>{getEventIdsFromFilter({ region: applied.region }).map(getEventbriteEmbed)}</ul>
+      <ul>{eventsId && eventsId.map(getEventbriteEmbed)}</ul>
     </div>
   );
 };
@@ -52,23 +84,23 @@ const EventApp = ({ applied, applyFilter, selected, dropdownSelectRegion, setSho
 const enhance = compose(
   withStateHandlers(
     {
-      selected: {
+      selectedFilters: {
         region: ''
       },
-      applied: {
+      appliedFilters: {
         region: ''
       }
     },
     {
-      dropdownSelectRegion: ({ selected }) => selectInput => ({
-        selected: {
-          ...selected,
+      dropdownSelectRegion: ({ selectedFilters }) => selectInput => ({
+        selectedFilters: {
+          ...selectedFilters,
           region: selectInput.value
         }
       }),
-      // moving all selected filters to applied filters
-      applyFilter: ({ selected }) => () => ({
-        applied: { ...selected }
+      // moving all selectedFilters to appliedFilters filters
+      applyFilter: ({ selectedFilters }) => () => ({
+        appliedFilters: { ...selectedFilters }
       })
     }
   )

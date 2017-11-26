@@ -61,7 +61,6 @@ app.get('/training', function(req, res) {
         }
       });
       const batchUrl = `https://www.eventbriteapi.com/v3/batch/?${queryString.stringify(tokenQuery)}`
-      console.log('req', batchedRequests)
 
       const form = new FormData();
       form.append('batch', JSON.stringify(batchedRequests));
