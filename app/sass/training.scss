@@ -1,12 +1,19 @@
-$background: #ffffff;
-$tabs-base-color: #6d6d6d;
+$background: #fff;
+$tabs-base-color: #fff;
+$red: #BD2C29;
+
+$labelHeight: 40px;
 
 body {
   padding: 20px;
   text-align: left;
   font-family: 'Helvetica', 'sans-erif';
-  color: #fff; 
+  color: #000; 
   background: $background;  
+}
+main {
+  max-width: 1200px;
+  margin: auto;
 }
 h1 {
   font-weight: normal;
@@ -24,7 +31,7 @@ h1 {
   float: none;
   list-style: none;
   position: relative;
-  margin: 80px 0 0 10px;
+  padding: 0;
   text-align: left;
   > li {
     float: left;
@@ -35,21 +42,51 @@ h1 {
     top: 0;
     left: -9999px;
   }
-  label {
+  .tab-header {
+    margin-bottom: 8px;
+  }
+  .tab-label {
     display: block;
-    padding: 14px 21px;
+    padding: 5px 20px;
     border-radius: 2px 2px 0 0;
+    border-bottom: 3px solid transparent;
     font-size: 20px;
     font-weight: normal;
     text-transform: capitalize;
-    background: $tabs-base-color;
     cursor: pointer;
     position: relative;
-    top: 4px; 
     transition: all 0.2s ease-in-out;
     &:hover {
-      background: darken($tabs-base-color, 10);
+      background: 3px solid lighten($red, 30);
     }
+  }
+  .event-label {
+    display: flex;
+    height: $labelHeight;
+    line-height: $labelHeight;
+
+    .event-label-text {
+      min-width: 10%;
+      margin-right: $labelHeight / 2;
+    }
+
+    .Select {
+      flex: 1;
+
+      .Select-control {
+        height: $labelHeight;
+        border-radius: 0;
+      }
+    }
+  }
+  .event-filter-apply {
+    width: 100%;
+    height: 60px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  .event-list {
+    list-style: none;
   }
   .tab-content{
     z-index: 2;
@@ -60,15 +97,13 @@ h1 {
     line-height: 25px;
     padding: 25px;  
     position: absolute;
-    top: 53px;
+    top: 50px;
     left: 0; 
-    background: darken($tabs-base-color, 15);
   }
   //The Magic
   [id^="tab"]:checked + label { 
     top: 0;
-    padding-top: 17px; 
-    background: darken($tabs-base-color, 15); 
+    border-bottom: 3px solid $red;
   }
   [id^="tab"]:checked ~ [id^="tab-content"] {
     display: block;

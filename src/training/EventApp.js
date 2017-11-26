@@ -41,7 +41,7 @@ const getEventIdsFromFilter = ({ region }) => {
 
 const getEventbriteEmbed = id => {
   return (
-    <li key={id}>
+    <li className="event-list" key={id}>
       <EventbriteEmbed id={id} />
     </li>
   );
@@ -72,12 +72,12 @@ const EventApp = ({
   const eventsId = getEventIdsFromFilter2(appliedFilters);
   return (
     <div>
-      <label>
-        State:
+      <label className="event-label">
+        <span className="event-label-text">State:</span>
         <Select name="region-select" value={selectedFilters.region} onChange={regionOnSelect} options={regionOptions} />
       </label>
-      <label>
-        Venue:
+      <label className="event-label">
+        <span className="event-label-text">Venue:</span>
         <Select
           name="venue-select"
           value={selectedFilters.localized_address_display}
@@ -85,8 +85,8 @@ const EventApp = ({
           options={localized_address_displayOptions}
         />
       </label>
-      <label>
-        Date:
+      <label className="event-label">
+        <span className="event-label-text">Date:</span>
         <Select
           name="date-select"
           value={selectedFilters.startDate}
@@ -94,7 +94,7 @@ const EventApp = ({
           options={startDateOptions}
         />
       </label>
-      <button onClick={applyFilter}>Apply</button>
+      <button className="event-filter-apply" onClick={applyFilter}>Apply</button>
       <ul>{eventsId && eventsId.map(getEventbriteEmbed)}</ul>
     </div>
   );
