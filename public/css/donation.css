@@ -62,3 +62,7 @@
     border-top-right-radius: 60px;
     border-bottom-right-radius: 60px;
 }
+
+button {
+  background: linear-gradient(90deg, #FF8000 , #C30017);
+}
