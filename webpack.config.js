@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 
 const config = {
-  entry: { training: './src/training/training.js' },
+  entry: { training: './src/training/training.js', donation: './src/donation/donation.js' },
   output: {
     path: path.resolve(__dirname, 'public/js'),
     filename: '[name].bundle.js'
@@ -14,7 +14,8 @@ const config = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['babel-preset-env', 'react']
+            presets: ['babel-preset-env', 'react'],
+            plugins: ['transform-object-rest-spread']
           }
         }
       },
