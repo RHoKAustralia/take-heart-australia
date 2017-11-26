@@ -76,7 +76,6 @@ app.get('/training', function(req, res) {
       // mutate eventsData and add address file for each of them
       batchedJson.forEach((resp, index) => {
         const parsedBody = JSON.parse(resp.body)
-        console.log('event data', parsedBody.address)
         eventsData[index].address = parsedBody.address;
       })
     })
@@ -97,7 +96,7 @@ app.get('/training', function(req, res) {
             </div>
           </div>
         `
-        return eventbriteIframeTemplate
+        return eventbriteIframeTemplate;
       })
 
       var html = fs.readFileSync(__dirname + '/app/html/training.html');
@@ -105,7 +104,12 @@ app.get('/training', function(req, res) {
 
       $('#eventbrite-events').append(iframes.join(''));
 
-      const eventDataInject = `<script>window.eventsData = ${JSON.stringify(eventsData)}</script>`
+      // process the event data, and transform them to contains data that client needs
+      const processedEventData = eventsData.map(eventData => {
+        const { id, start: { local: startDate }, address: { region, localized_address_display } } = eventData;
+        return { id, startDate, region, localized_address_display };
+      });
+      const eventDataInject = `<script>window.eventsData = ${JSON.stringify(processedEventData)}</script>`
       $('body').prepend(eventDataInject);
       res.send($.html());
     });
