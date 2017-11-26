@@ -14,7 +14,8 @@ const config = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['babel-preset-env', 'react']
+            presets: ['babel-preset-env', 'react'],
+            plugins: ['transform-object-rest-spread']
           }
         }
       },
@@ -25,9 +26,9 @@ const config = {
     ]
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    }),
+    // new webpack.DefinePlugin({
+    //   'process.env.NODE_ENV': JSON.stringify('production')
+    // }),
     new webpack.optimize.UglifyJsPlugin()
   ]
 };
