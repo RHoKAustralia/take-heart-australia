@@ -5,6 +5,8 @@ import 'react-select/dist/react-select.css';
 import { compose, withProps, withStateHandlers } from 'recompose';
 import EventbriteEmbed from './EventbriteEmbed';
 
+const FILTER_NAMES = ['region', 'startDate', 'localized_address_display'];
+
 const getEventIdsFromFilter2 = filters => {
   // if all filters are falsy, don't show anything
   const allFiltersEmpty = !Object.values(filters).some(Boolean);
@@ -12,29 +14,29 @@ const getEventIdsFromFilter2 = filters => {
     return null;
   }
 
-  return window.eventsData
-    // filter the eventData based on the filters object passed in
-    .filter(eventData => {
+  return (
+    window.eventsData
+      // filter the eventData based on the filters object passed in
+      .filter(eventData => {
+        const getFilterResultFromFilterKey = key => {
+          const toCompareValue = filters[key];
+          // if the value of the filter is blank
+          // we assume that the filter is not yet selected, so return true
+          if (!toCompareValue) {
+            return true;
+          }
+          return eventData[key] === toCompareValue;
+        };
 
-      const getFilterResultFromFilterKey = key => {
-        const toCompareValue = filters[key];
-        // if the value of the filter is blank
-        // we assume that the filter is not yet selected, so return true
-        if (!toCompareValue) {
-          return true;
-        }
-        console.log('inside each filter key', toCompareValue, eventData[key], eventData[key] === toCompareValue);
-        return eventData[key] === toCompareValue;
-      };
-
-      console.log('FILTERING EVENTS DATA, inside each event data', eventData, 'result:', Object.keys(filters).map(getFilterResultFromFilterKey).every(Boolean))
-      
-      return Object.keys(filters).map(getFilterResultFromFilterKey).every(Boolean)
-    })
-    .map(filteredEventData => {
-      console.log('FILTERED EVENT DATA', filteredEventData)
-      return filteredEventData.id
-    });
+        // return combined result of all filters applied to current eventData
+        return Object.keys(filters)
+          .map(getFilterResultFromFilterKey)
+          .every(Boolean);
+      })
+      .map(filteredEventData => {
+        return filteredEventData.id;
+      })
+  );
 };
 
 const getEventIdsFromFilter = ({ region }) => {
@@ -42,7 +44,6 @@ const getEventIdsFromFilter = ({ region }) => {
 };
 
 const getEventbriteEmbed = id => {
-  console.log('get event brite embed', id);
   return (
     <li key={id}>
       <EventbriteEmbed id={id} />
@@ -60,19 +61,41 @@ const createDropdownOptions = keyName => {
   });
 };
 
-const EventApp = ({ appliedFilters, applyFilter, selectedFilters, dropdownSelectRegion }) => {
+const EventApp = ({
+  appliedFilters,
+  applyFilter,
+  selectedFilters,
+  regionOnSelect,
+  localized_address_displayOnSelect,
+  startDateOnSelect,
+}) => {
   const regionOptions = createDropdownOptions('region');
+  const localized_address_displayOptions = createDropdownOptions('localized_address_display');
+  const startDateOptions = createDropdownOptions('startDate');
+
   const eventsId = getEventIdsFromFilter2(appliedFilters);
-  console.log('events id', eventsId);
   return (
     <div>
       <label>
         State:
+        <Select name="region-select" value={selectedFilters.region} onChange={regionOnSelect} options={regionOptions} />
+      </label>
+      <label>
+        Venue:
         <Select
-          name="state-select"
-          value={selectedFilters.region}
-          onChange={dropdownSelectRegion}
-          options={regionOptions}
+          name="venue-select"
+          value={selectedFilters.localized_address_display}
+          onChange={localized_address_displayOnSelect}
+          options={localized_address_displayOptions}
+        />
+      </label>
+      <label>
+        Date:
+        <Select
+          name="date-select"
+          value={selectedFilters.startDate}
+          onChange={startDateOnSelect}
+          options={startDateOptions}
         />
       </label>
       <button onClick={applyFilter}>Apply</button>
@@ -81,23 +104,37 @@ const EventApp = ({ appliedFilters, applyFilter, selectedFilters, dropdownSelect
   );
 };
 
+const generateFiltersInitialValue = (filterNames, initialValue = '') => {
+  return filterNames.reduce((acc, filterName) => {
+    acc[filterName] = '';
+    return acc;
+  }, {});
+};
+
+const generateDropdownOnChange = filterNames => {
+  return filterNames.reduce((acc, filterKey) => {
+    acc[`${filterKey}OnSelect`] = ({ selectedFilters }) => selectInput => ({
+      selectedFilters: {
+        ...selectedFilters,
+        [filterKey]: selectInput.value
+      }
+    });
+    return acc;
+  }, {});
+};
+
 const enhance = compose(
   withStateHandlers(
     {
       selectedFilters: {
-        region: ''
+        ...generateFiltersInitialValue(FILTER_NAMES)
       },
       appliedFilters: {
-        region: ''
+        ...generateFiltersInitialValue(FILTER_NAMES)
       }
     },
     {
-      dropdownSelectRegion: ({ selectedFilters }) => selectInput => ({
-        selectedFilters: {
-          ...selectedFilters,
-          region: selectInput.value
-        }
-      }),
+      ...generateDropdownOnChange(FILTER_NAMES),
       // moving all selectedFilters to appliedFilters filters
       applyFilter: ({ selectedFilters }) => () => ({
         appliedFilters: { ...selectedFilters }
@@ -107,31 +144,6 @@ const enhance = compose(
 );
 const App = enhance(EventApp);
 
-const getQueryStringFromObj = obj => {
-  const keyValues = Object.keys(obj).map(key => {
-    return `${key}=${obj[key]}`;
-  });
-  return keyValues.join('&');
-};
-
-const fetchEventbriteEvents = e => {
-  const userId = 236752695629;
-  const apiUrl = 'https://www.eventbriteapi.com/v3/events/search';
-  const queryString = {
-    'user.id': 236752695629,
-    token: 'QHZIGQMTINSSRO2NP7QU'
-  };
-  const url = `${apiUrl}?${getQueryStringFromObj(queryString)}`;
-
-  fetch(url)
-    .then(resp => {
-      const eventIds = resp.events.map(event => event.id);
-      window.ids = eventIds;
-    })
-    .catch(err => {});
-};
-
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('HELLO');
   ReactDOM.render(<App />, document.getElementById('react'));
 });

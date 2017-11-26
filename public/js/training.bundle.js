@@ -1072,7 +1072,11 @@ var _EventbriteEmbed2 = _interopRequireDefault(_EventbriteEmbed);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var FILTER_NAMES = ['region', 'startDate', 'localized_address_display'];
 
 var getEventIdsFromFilter2 = function getEventIdsFromFilter2(filters) {
   // if all filters are falsy, don't show anything
@@ -1084,7 +1088,6 @@ var getEventIdsFromFilter2 = function getEventIdsFromFilter2(filters) {
   return window.eventsData
   // filter the eventData based on the filters object passed in
   .filter(function (eventData) {
-
     var getFilterResultFromFilterKey = function getFilterResultFromFilterKey(key) {
       var toCompareValue = filters[key];
       // if the value of the filter is blank
@@ -1092,19 +1095,12 @@ var getEventIdsFromFilter2 = function getEventIdsFromFilter2(filters) {
       if (!toCompareValue) {
         return true;
       }
-      console.log('inside each filter key', toCompareValue, eventData[key], eventData[key] === toCompareValue);
       return eventData[key] === toCompareValue;
     };
 
-    console.log('FILTERING EVENTS DATA, inside each event data', eventData, 'result:', Object.keys(filters).map(getFilterResultFromFilterKey).every(Boolean));
-
+    // return combined result of all filters applied to current eventData
     return Object.keys(filters).map(getFilterResultFromFilterKey).every(Boolean);
-
-    // return Object.keys(filters).reduce((acc, filterKey) => {
-    //   return acc && getFilterResultFromFilterKey(filterKey);
-    // }, true);
   }).map(function (filteredEventData) {
-    console.log('FILTERED EVENT DATA', filteredEventData);
     return filteredEventData.id;
   });
 };
@@ -1120,7 +1116,6 @@ var getEventIdsFromFilter = function getEventIdsFromFilter(_ref) {
 };
 
 var getEventbriteEmbed = function getEventbriteEmbed(id) {
-  console.log('get event brite embed', id);
   return _react2.default.createElement(
     'li',
     { key: id },
@@ -1144,11 +1139,15 @@ var EventApp = function EventApp(_ref2) {
   var appliedFilters = _ref2.appliedFilters,
       applyFilter = _ref2.applyFilter,
       selectedFilters = _ref2.selectedFilters,
-      dropdownSelectRegion = _ref2.dropdownSelectRegion;
+      regionOnSelect = _ref2.regionOnSelect,
+      localized_address_displayOnSelect = _ref2.localized_address_displayOnSelect,
+      startDateOnSelect = _ref2.startDateOnSelect;
 
   var regionOptions = createDropdownOptions('region');
+  var localized_address_displayOptions = createDropdownOptions('localized_address_display');
+  var startDateOptions = createDropdownOptions('startDate');
+
   var eventsId = getEventIdsFromFilter2(appliedFilters);
-  console.log('events id', eventsId);
   return _react2.default.createElement(
     'div',
     null,
@@ -1156,11 +1155,28 @@ var EventApp = function EventApp(_ref2) {
       'label',
       null,
       'State:',
+      _react2.default.createElement(_reactSelect2.default, { name: 'region-select', value: selectedFilters.region, onChange: regionOnSelect, options: regionOptions })
+    ),
+    _react2.default.createElement(
+      'label',
+      null,
+      'Venue:',
       _react2.default.createElement(_reactSelect2.default, {
-        name: 'state-select',
-        value: selectedFilters.region,
-        onChange: dropdownSelectRegion,
-        options: regionOptions
+        name: 'venue-select',
+        value: selectedFilters.localized_address_display,
+        onChange: localized_address_displayOnSelect,
+        options: localized_address_displayOptions
+      })
+    ),
+    _react2.default.createElement(
+      'label',
+      null,
+      'Date:',
+      _react2.default.createElement(_reactSelect2.default, {
+        name: 'date-select',
+        value: selectedFilters.startDate,
+        onChange: startDateOnSelect,
+        options: startDateOptions
       })
     ),
     _react2.default.createElement(
@@ -1176,24 +1192,33 @@ var EventApp = function EventApp(_ref2) {
   );
 };
 
-var enhance = (0, _recompose.compose)((0, _recompose.withStateHandlers)({
-  selectedFilters: {
-    region: ''
-  },
-  appliedFilters: {
-    region: ''
-  }
-}, {
-  dropdownSelectRegion: function dropdownSelectRegion(_ref3) {
-    var selectedFilters = _ref3.selectedFilters;
-    return function (selectInput) {
-      return {
-        selectedFilters: _extends({}, selectedFilters, {
-          region: selectInput.value
-        })
+var generateFiltersInitialValue = function generateFiltersInitialValue(filterNames) {
+  var initialValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+  return filterNames.reduce(function (acc, filterName) {
+    acc[filterName] = '';
+    return acc;
+  }, {});
+};
+
+var generateDropdownOnChange = function generateDropdownOnChange(filterNames) {
+  return filterNames.reduce(function (acc, filterKey) {
+    acc[filterKey + 'OnSelect'] = function (_ref3) {
+      var selectedFilters = _ref3.selectedFilters;
+      return function (selectInput) {
+        return {
+          selectedFilters: _extends({}, selectedFilters, _defineProperty({}, filterKey, selectInput.value))
+        };
       };
     };
-  },
+    return acc;
+  }, {});
+};
+
+var enhance = (0, _recompose.compose)((0, _recompose.withStateHandlers)({
+  selectedFilters: _extends({}, generateFiltersInitialValue(FILTER_NAMES)),
+  appliedFilters: _extends({}, generateFiltersInitialValue(FILTER_NAMES))
+}, _extends({}, generateDropdownOnChange(FILTER_NAMES), {
   // moving all selectedFilters to appliedFilters filters
   applyFilter: function applyFilter(_ref4) {
     var selectedFilters = _ref4.selectedFilters;
@@ -1203,35 +1228,10 @@ var enhance = (0, _recompose.compose)((0, _recompose.withStateHandlers)({
       };
     };
   }
-}));
+})));
 var App = enhance(EventApp);
 
-var getQueryStringFromObj = function getQueryStringFromObj(obj) {
-  var keyValues = Object.keys(obj).map(function (key) {
-    return key + '=' + obj[key];
-  });
-  return keyValues.join('&');
-};
-
-var fetchEventbriteEvents = function fetchEventbriteEvents(e) {
-  var userId = 236752695629;
-  var apiUrl = 'https://www.eventbriteapi.com/v3/events/search';
-  var queryString = {
-    'user.id': 236752695629,
-    token: 'QHZIGQMTINSSRO2NP7QU'
-  };
-  var url = apiUrl + '?' + getQueryStringFromObj(queryString);
-
-  fetch(url).then(function (resp) {
-    var eventIds = resp.events.map(function (event) {
-      return event.id;
-    });
-    window.ids = eventIds;
-  }).catch(function (err) {});
-};
-
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('HELLO');
   _reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById('react'));
 });
 
