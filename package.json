@@ -11,6 +11,7 @@
     "pg": "^7.4.0",
     "postgrator": "^3.0.0",
     "query-string": "^5.0.1",
+    "stripe": "^5.3.0",
     "react-select": "^1.0.1",
     "recompose": "^0.26.0"
   },
