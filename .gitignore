@@ -2,6 +2,8 @@ node_modules
 .*.swp
 .vscode
 npm-debug.log
+yarn-error.log
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
