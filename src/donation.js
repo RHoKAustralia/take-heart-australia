@@ -1,3 +1,7 @@
+var stripe = require("stripe")(
+    "sk_test_sPgf3XjouxQvdAuFWsPH5lVd"
+);
+
 const URL_OPTIONS = '/donation/options'
 const URL_DETAILS = '/donation/details'
 const URL_PAYMENT = '/donation/payment'
@@ -41,6 +45,110 @@ const DetailsAction = (req, res) => {
     res.redirect(URL_PAYMENT)
 }
 
+const doOneTimeDonation = (req, res, number, month, year, cvv, damount, email) => {
+    stripe.tokens.create({
+        card: {
+            "number": number,
+            "exp_month": month,
+            "exp_year": year,
+            "cvc": cvv + ''
+        }
+    }, function (err, token) {
+        if (err == null && token != null) {
+            stripe.charges.create({
+                amount: parseInt(damount) * 100,    // amount is in cents, mul by 100
+                currency: "aud",
+                source: token.id,
+                description: "Charge for " + email,
+                receipt_email: email
+            }, function (err, charge) {
+                if (err == null && charge != null && charge.paid) {
+                    req.session.form.steps[2] = true
+                    res.redirect(URL_CONFIRMATION)
+                } else {
+                    res.redirect(URL_PAYMENT + '?message=' + encodeURIComponent(err.message))
+                }
+            })
+        } else {
+            res.redirect(URL_PAYMENT + '?message=' + encodeURIComponent(err.message))
+        }
+    })
+}
+
+const subscribeMonthlyDonation = (req, res, plan, number, month, year, cvv, email) => {
+    stripe.tokens.create({
+        card: {
+            "number": number,
+            "exp_month": month,
+            "exp_year": year,
+            "cvc": cvv + ''
+        }
+    }, function (err, token) {
+        if (err == null && token != null) {
+            stripe.customers.create({
+                description: 'Customer for ' + email,
+                source: token.id // obtained with Stripe.js
+            }, function (err, customer) {
+                if(err == null && customer != null) {
+                    console.log('customer created')
+                    stripe.subscriptions.create({
+                        customer: customer.id,
+                        items: [{plan: plan.id}]
+                        }, function (err, subscription) {
+                            if (err == null && subscription != null) {
+                                console.log('subscription for plan ' + plan.id + ' created')
+                                req.session.form.steps[2] = true
+                                res.redirect(URL_CONFIRMATION)
+                            } else {
+                                res.redirect(URL_PAYMENT + '?message=' + err.message)
+                            }
+                        }
+                    )
+                } else {
+                    res.redirect(URL_PAYMENT + '?message=' + err.message)
+                }
+            })
+        } else {
+            res.redirect(URL_PAYMENT + '?message=' + err.message)
+        }
+    })
+}
+
+const doMonthlyDonation = (req, res, damount, number, month, year, cvv, email) => {
+    var planId = 'donate_monthly_' + damount
+    stripe.plans.retrieve(
+        planId,
+        function (err, plan) {
+            if(err == null && plan != null) {
+                console.log('Got plan ' + planId)
+                subscribeMonthlyDonation(req, res, plan, number, month, year, cvv, email)
+            } else {
+                if (err.message.indexOf('No such plan') >= 0) {
+                    // didn't find a proper return code for non-existing plan
+                    // create a new plan
+                    console.log('Plan ' + planId + ' does not exist, create one')
+                    stripe.plans.create({
+                        amount: parseInt(damount) * 100,
+                        interval: "month",
+                        name: "Monthly donation AUD $" + damount,
+                        currency: "aud",
+                        id: planId
+                    }, function (err, plan) {
+                        if(err == null && plan != null) {
+                            console.log('Plan created ' + planId)
+                            subscribeMonthlyDonation(req, res, plan, number, month, year, cvv, email)
+                        } else {
+                            res.redirect(URL_PAYMENT + '?message=' + encodeURIComponent(err.message))
+                        }
+                    })
+                } else {
+                    res.redirect(URL_PAYMENT + '?message=' + encodeURIComponent(err.message))
+                }
+            }
+        }
+    )
+}
+
 const PaymentAction = (req, res) => {
     ensureForm(req)
     var name = req.body.card_name
@@ -53,38 +161,12 @@ const PaymentAction = (req, res) => {
     var damount = req.session.form.damount
     var email = req.session.form.email
 
-    if(name && number && month && year && cvv && dtype && damount && email) {
-        var stripe = require("stripe")(
-            "****" // secret key here
-        );
-
-        stripe.tokens.create({
-            card: {
-                "number": number,
-                "exp_month": month,
-                "exp_year": year,
-                "cvc": cvv + ''
-            }
-        }, function (err, token) {
-            if(err == null && token != null) {
-                stripe.charges.create({
-                    amount: parseInt(damount) * 100,    // amount is in cents, mul by 100
-                    currency: "aud",
-                    source: token.id,
-                    description: "Charge for " + email,
-                    receipt_email: email
-                }, function (err, charge) {
-                    if(err == null && charge != null && charge.paid) {
-                        req.session.form.steps[2] = true
-                        res.redirect(URL_CONFIRMATION)
-                    } else {
-                        res.redirect(URL_PAYMENT + '?message=' + encodeURIComponent(err.message))
-                    }
-                })
-            } else {
-                res.redirect(URL_PAYMENT + '?message=' + encodeURIComponent(err.message))
-            }
-        })
+    if(name && number && month && year && cvv && dtype && damount && email && (dtype == '1' || dtype == '2')) {
+        if(dtype == '1') {
+            doOneTimeDonation(req, res, number, month, year, cvv, damount, email)
+        } else {
+            doMonthlyDonation(req, res, damount, number, month, year, cvv, email)
+        }
     } else {
         res.redirect(URL_PAYMENT + '?message=' + encodeURIComponent('Insufficient information'))
     }
