@@ -1,6 +1,5 @@
 var stripe = require("stripe")(
     "sk_test_sPgf3XjouxQvdAuFWsPH5lVd"
-    // "sk_live_TowfnSxJ5wJhLDVHFXrF0cMu" // remove this one in code, should be configured
 );
 
 const URL_OPTIONS = '/donation/options'
