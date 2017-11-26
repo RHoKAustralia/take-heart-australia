@@ -31,7 +31,8 @@ app.use(session({
   cookie: { maxAge: null }
 }))
 
-
+app.set('views', __dirname + '/views')
+app.engine('html', require('ejs').renderFile)
 
 app.get('/', (req, res) => {
   res.send('oh hai');
@@ -136,6 +137,10 @@ app.post('/donation/:step', (req, res) => {
     res.status(404).send('Not found');
   }
 });
+
+app.get('/donate_secure_pay', (req, res) => {
+  res.render('payment.html')
+})
 
 // createdb tha
 const sql = require('sql-template-strings');
