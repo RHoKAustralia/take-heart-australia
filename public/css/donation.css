@@ -1,0 +1,64 @@
+.icon-wrapper{
+    width: 25%;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+
+.icon-block{
+    height: 100px;
+}
+
+.icon-outter-wrapper{
+    height: 100%;
+}
+
+.heading-style1{
+    font-size: 30px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+
+}
+
+.payment-style{
+    cursor: pointer;
+}
+
+/* .payment-selection-wrapper{
+
+} */
+
+.payment-selection.col-sm-6 {
+    padding-right: 0px;
+}
+
+#One-time{
+    text-align: right;
+    width: 200px;
+    float: right;
+    background: #ff8000;
+    border: 1px solid #ff8000;
+    padding: 15px;
+    color: white;
+    font-size: 20px;
+    border-top-left-radius: 60px;
+    border-bottom-left-radius: 60px;
+}
+/* #One-time:active{
+    background: #ff8000;
+} */
+#Monthly{
+    text-align: left;
+    width: 200px;
+    float: left;
+    /* background: #ff8000; */
+    border: 1px solid #ff8000;
+    padding: 15px;
+    color: black;
+    font-size: 20px;
+    border-top-right-radius: 60px;
+    border-bottom-right-radius: 60px;
+}
