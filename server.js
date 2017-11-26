@@ -97,6 +97,10 @@ app.get('/training', function(req, res) {
 const DonationPage = require('./pages/donation.jsx')
 const Donation = require('./src/donation.js')
 
+app.get('/donation', (req, res) => {
+  res.redirect('/donation/options')
+})
+
 app.get('/donation/:step', (req, res) => {
   var step = req.params.step
   var message = req.query.message
