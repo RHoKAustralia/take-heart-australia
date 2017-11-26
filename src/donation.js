@@ -11,7 +11,6 @@ const ensureForm = (req) => {
 }
 
 const ensureSteps = (form, index) => {
-    console.log(form.steps);
     var nextIndex = 0
     for(idx in form.steps) {
         if(!form.steps[idx]) {
@@ -44,9 +43,51 @@ const DetailsAction = (req, res) => {
 
 const PaymentAction = (req, res) => {
     ensureForm(req)
-    // TODO: payment using strip
-    req.session.form.steps[2] = true
-    res.redirect(URL_CONFIRMATION)
+    var name = req.body.card_name
+    var number = req.body.card_number
+    var month = req.body.expire_month
+    var year = req.body.expire_year
+    var cvv = req.body.cvv
+
+    var dtype = req.session.form.dtype
+    var damount = req.session.form.damount
+    var email = req.session.form.email
+
+    if(name && number && month && year && cvv && dtype && damount && email) {
+        var stripe = require("stripe")(
+            "****" // secret key here
+        );
+
+        stripe.tokens.create({
+            card: {
+                "number": number,
+                "exp_month": month,
+                "exp_year": year,
+                "cvc": cvv + ''
+            }
+        }, function (err, token) {
+            if(err == null && token != null) {
+                stripe.charges.create({
+                    amount: parseInt(damount) * 100,    // amount is in cents, mul by 100
+                    currency: "aud",
+                    source: token.id,
+                    description: "Charge for " + email,
+                    receipt_email: email
+                }, function (err, charge) {
+                    if(err == null && charge != null && charge.paid) {
+                        req.session.form.steps[2] = true
+                        res.redirect(URL_CONFIRMATION)
+                    } else {
+                        res.redirect(URL_PAYMENT + '?message=' + encodeURIComponent(err.message))
+                    }
+                })
+            } else {
+                res.redirect(URL_PAYMENT + '?message=' + encodeURIComponent(err.message))
+            }
+        })
+    } else {
+        res.redirect(URL_PAYMENT + '?message=' + encodeURIComponent('Insufficient information'))
+    }
 }
 
 const Actions = {
@@ -55,6 +96,7 @@ const Actions = {
     'payment': PaymentAction
 }
 
+// TODO: refactoring code to unify these variables
 const StepsIndex = {
     'options': 0,
     'details': 1,

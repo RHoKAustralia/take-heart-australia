@@ -28,7 +28,7 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 60000 }
+  cookie: { maxAge: null }
 }))
 
 
@@ -115,19 +115,20 @@ app.get('/training', function(req, res) {
     });
 });
 
-const DonationPages = require('./pages/donation.jsx')
-const DonationActions = require('./src/donation.js')
+const DonationPage = require('./pages/donation.jsx')
+const Donation = require('./src/donation.js')
 
 app.get('/donation/:step', (req, res) => {
   var step = req.params.step
-  if (step in DonationPages.Steps) {
+  var message = req.query.message
+  if (step in DonationPage.Steps) {
     res.set('content-type', 'text/html')
     var form = req.session.form || {steps: [false, false, false, false]}
 
-    var targetStepIndex = DonationActions.StepsIndex[step]
-    var redirectIndex = DonationActions.ensureSteps(form, targetStepIndex)
+    var targetStepIndex = Donation.StepsIndex[step]
+    var redirectIndex = Donation.ensureSteps(form, targetStepIndex)
     if (redirectIndex < targetStepIndex) {
-      res.redirect(DonationActions.URLs[DonationActions.IndexToSteps[redirectIndex]])
+      res.redirect(Donation.URLs[Donation.IndexToSteps[redirectIndex]])
     }
 
     // clear session when finished
@@ -135,7 +136,7 @@ app.get('/donation/:step', (req, res) => {
       req.session.form = undefined
     }
 
-    const element = react.createElement(DonationPages.Steps[step], {form: form})
+    const element = react.createElement(DonationPage.Steps[step], { form: form, message: message })
     const stream = ReactDOMServer.renderToStaticNodeStream(element)
     stream.pipe(res)
   } else {
@@ -146,8 +147,8 @@ app.get('/donation/:step', (req, res) => {
 
 app.post('/donation/:step', (req, res) => {
   var step = req.params.step
-  if (step in DonationActions.Actions) {
-    DonationActions.Actions[step](req, res)
+  if (step in Donation.Actions) {
+    Donation.Actions[step](req, res)
   } else {
     res.status(404).send('Not found')
   }
