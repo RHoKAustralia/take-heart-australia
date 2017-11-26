@@ -261,6 +261,20 @@ process.umask = function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+if (process.env.NODE_ENV === 'production') {
+  module.exports = __webpack_require__(19);
+} else {
+  module.exports = __webpack_require__(20);
+}
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 /**
@@ -297,20 +311,6 @@ emptyFunction.thatReturnsArgument = function (arg) {
 };
 
 module.exports = emptyFunction;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-if (process.env.NODE_ENV === 'production') {
-  module.exports = __webpack_require__(19);
-} else {
-  module.exports = __webpack_require__(20);
-}
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 3 */
@@ -507,7 +507,7 @@ module.exports = emptyObject;
 
 
 
-var emptyFunction = __webpack_require__(1);
+var emptyFunction = __webpack_require__(2);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -817,7 +817,7 @@ module.exports = ExecutionEnvironment;
  * @typechecks
  */
 
-var emptyFunction = __webpack_require__(1);
+var emptyFunction = __webpack_require__(2);
 
 /**
  * Upstream version of event listener. Does not take into account specific
@@ -1024,11 +1024,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(30)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(39)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(31)();
+  module.exports = __webpack_require__(40)();
 }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
@@ -1048,9 +1048,14 @@ module.exports = __webpack_amd_options__;
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FILTER_NAMES = undefined;
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -1058,139 +1063,17 @@ var _reactDom = __webpack_require__(10);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _reactSelect = __webpack_require__(29);
+var _recompose = __webpack_require__(29);
 
-var _reactSelect2 = _interopRequireDefault(_reactSelect);
+var _EventApp = __webpack_require__(37);
 
-__webpack_require__(34);
-
-var _recompose = __webpack_require__(39);
-
-var _EventbriteEmbed = __webpack_require__(47);
-
-var _EventbriteEmbed2 = _interopRequireDefault(_EventbriteEmbed);
+var _EventApp2 = _interopRequireDefault(_EventApp);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var FILTER_NAMES = ['region', 'startDate', 'localized_address_display'];
-
-var getEventIdsFromFilter2 = function getEventIdsFromFilter2(filters) {
-  // if all filters are falsy, don't show anything
-  var allFiltersEmpty = !Object.values(filters).some(Boolean);
-  if (allFiltersEmpty) {
-    return null;
-  }
-
-  return window.eventsData
-  // filter the eventData based on the filters object passed in
-  .filter(function (eventData) {
-    var getFilterResultFromFilterKey = function getFilterResultFromFilterKey(key) {
-      var toCompareValue = filters[key];
-      // if the value of the filter is blank
-      // we assume that the filter is not yet selected, so return true
-      if (!toCompareValue) {
-        return true;
-      }
-      return eventData[key] === toCompareValue;
-    };
-
-    // return combined result of all filters applied to current eventData
-    return Object.keys(filters).map(getFilterResultFromFilterKey).every(Boolean);
-  }).map(function (filteredEventData) {
-    return filteredEventData.id;
-  });
-};
-
-var getEventIdsFromFilter = function getEventIdsFromFilter(_ref) {
-  var region = _ref.region;
-
-  return window.eventsData.filter(function (eventData) {
-    return eventData.region === region;
-  }).map(function (x) {
-    return x.id;
-  });
-};
-
-var getEventbriteEmbed = function getEventbriteEmbed(id) {
-  return _react2.default.createElement(
-    'li',
-    { key: id },
-    _react2.default.createElement(_EventbriteEmbed2.default, { id: id })
-  );
-};
-
-var createDropdownOptions = function createDropdownOptions(keyName) {
-  var regionList = new Set(window.eventsData.map(function (eventData) {
-    return eventData[keyName];
-  }));
-  return [].concat(_toConsumableArray(regionList)).map(function (region) {
-    return {
-      value: region,
-      label: region
-    };
-  });
-};
-
-var EventApp = function EventApp(_ref2) {
-  var appliedFilters = _ref2.appliedFilters,
-      applyFilter = _ref2.applyFilter,
-      selectedFilters = _ref2.selectedFilters,
-      regionOnSelect = _ref2.regionOnSelect,
-      localized_address_displayOnSelect = _ref2.localized_address_displayOnSelect,
-      startDateOnSelect = _ref2.startDateOnSelect;
-
-  var regionOptions = createDropdownOptions('region');
-  var localized_address_displayOptions = createDropdownOptions('localized_address_display');
-  var startDateOptions = createDropdownOptions('startDate');
-
-  var eventsId = getEventIdsFromFilter2(appliedFilters);
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'label',
-      null,
-      'State:',
-      _react2.default.createElement(_reactSelect2.default, { name: 'region-select', value: selectedFilters.region, onChange: regionOnSelect, options: regionOptions })
-    ),
-    _react2.default.createElement(
-      'label',
-      null,
-      'Venue:',
-      _react2.default.createElement(_reactSelect2.default, {
-        name: 'venue-select',
-        value: selectedFilters.localized_address_display,
-        onChange: localized_address_displayOnSelect,
-        options: localized_address_displayOptions
-      })
-    ),
-    _react2.default.createElement(
-      'label',
-      null,
-      'Date:',
-      _react2.default.createElement(_reactSelect2.default, {
-        name: 'date-select',
-        value: selectedFilters.startDate,
-        onChange: startDateOnSelect,
-        options: startDateOptions
-      })
-    ),
-    _react2.default.createElement(
-      'button',
-      { onClick: applyFilter },
-      'Apply'
-    ),
-    _react2.default.createElement(
-      'ul',
-      null,
-      eventsId && eventsId.map(getEventbriteEmbed)
-    )
-  );
-};
+var FILTER_NAMES = exports.FILTER_NAMES = ['region', 'startDate', 'localized_address_display'];
 
 var generateFiltersInitialValue = function generateFiltersInitialValue(filterNames) {
   var initialValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
@@ -1203,8 +1086,8 @@ var generateFiltersInitialValue = function generateFiltersInitialValue(filterNam
 
 var generateDropdownOnChange = function generateDropdownOnChange(filterNames) {
   return filterNames.reduce(function (acc, filterKey) {
-    acc[filterKey + 'OnSelect'] = function (_ref3) {
-      var selectedFilters = _ref3.selectedFilters;
+    acc[filterKey + 'OnSelect'] = function (_ref) {
+      var selectedFilters = _ref.selectedFilters;
       return function (selectInput) {
         return {
           selectedFilters: _extends({}, selectedFilters, _defineProperty({}, filterKey, selectInput.value))
@@ -1220,8 +1103,8 @@ var enhance = (0, _recompose.compose)((0, _recompose.withStateHandlers)({
   appliedFilters: _extends({}, generateFiltersInitialValue(FILTER_NAMES))
 }, _extends({}, generateDropdownOnChange(FILTER_NAMES), {
   // moving all selectedFilters to appliedFilters filters
-  applyFilter: function applyFilter(_ref4) {
-    var selectedFilters = _ref4.selectedFilters;
+  applyFilter: function applyFilter(_ref2) {
+    var selectedFilters = _ref2.selectedFilters;
     return function () {
       return {
         appliedFilters: _extends({}, selectedFilters)
@@ -1229,7 +1112,8 @@ var enhance = (0, _recompose.compose)((0, _recompose.withStateHandlers)({
     };
   }
 })));
-var App = enhance(EventApp);
+
+var App = enhance(_EventApp2.default);
 
 document.addEventListener('DOMContentLoaded', function () {
   _reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById('react'));
@@ -1254,7 +1138,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var m = __webpack_require__(3),
     n = __webpack_require__(5),
-    p = __webpack_require__(1);
+    p = __webpack_require__(2);
 function q(a) {
   for (var b = arguments.length - 1, e = "Minified React error #" + a + "; visit http://facebook.github.io/react/docs/error-decoder.html?invariant\x3d" + a, d = 0; d < b; d++) {
     e += "\x26args[]\x3d" + encodeURIComponent(arguments[d + 1]);
@@ -1384,7 +1268,7 @@ if (process.env.NODE_ENV !== "production") {
     var invariant = __webpack_require__(4);
     var emptyObject = __webpack_require__(5);
     var warning = __webpack_require__(6);
-    var emptyFunction = __webpack_require__(1);
+    var emptyFunction = __webpack_require__(2);
     var checkPropTypes = __webpack_require__(7);
 
     // TODO: this is special because it gets imported during build.
@@ -2725,10 +2609,10 @@ if (process.env.NODE_ENV !== "production") {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var aa = __webpack_require__(2),
+var aa = __webpack_require__(1),
     m = __webpack_require__(11),
     A = __webpack_require__(3),
-    B = __webpack_require__(1),
+    B = __webpack_require__(2),
     ca = __webpack_require__(12),
     da = __webpack_require__(13),
     ea = __webpack_require__(9),
@@ -4781,7 +4665,7 @@ module.exports = isNode;
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- */var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol&&obj!==Symbol.prototype?"symbol":typeof obj;};if(process.env.NODE_ENV!=="production"){(function(){'use strict';var React=__webpack_require__(2);var invariant=__webpack_require__(4);var warning=__webpack_require__(6);var ExecutionEnvironment=__webpack_require__(11);var _assign=__webpack_require__(3);var emptyFunction$1=__webpack_require__(1);var EventListener=__webpack_require__(12);var getActiveElement=__webpack_require__(13);var shallowEqual=__webpack_require__(9);var containsNode=__webpack_require__(14);var focusNode=__webpack_require__(15);var emptyObject=__webpack_require__(5);var checkPropTypes=__webpack_require__(7);var hyphenateStyleName=__webpack_require__(25);var camelizeStyleName=__webpack_require__(27);/**
+ */var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol&&obj!==Symbol.prototype?"symbol":typeof obj;};if(process.env.NODE_ENV!=="production"){(function(){'use strict';var React=__webpack_require__(1);var invariant=__webpack_require__(4);var warning=__webpack_require__(6);var ExecutionEnvironment=__webpack_require__(11);var _assign=__webpack_require__(3);var emptyFunction$1=__webpack_require__(2);var EventListener=__webpack_require__(12);var getActiveElement=__webpack_require__(13);var shallowEqual=__webpack_require__(9);var containsNode=__webpack_require__(14);var focusNode=__webpack_require__(15);var emptyObject=__webpack_require__(5);var checkPropTypes=__webpack_require__(7);var hyphenateStyleName=__webpack_require__(25);var camelizeStyleName=__webpack_require__(27);/**
  * WARNING: DO NOT manually require this module.
  * This is a replacement for `invariant(...)` used by the error code system
  * and will _only_ be required by the corresponding babel pass.
@@ -7927,6 +7811,1488 @@ module.exports = camelize;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.setObservableConfig = exports.createEventHandlerWithConfig = exports.createEventHandler = exports.mapPropsStreamWithConfig = exports.mapPropsStream = exports.componentFromStreamWithConfig = exports.componentFromStream = exports.hoistStatics = exports.nest = exports.componentFromProp = exports.createSink = exports.isClassComponent = exports.shallowEqual = exports.wrapDisplayName = exports.getDisplayName = exports.compose = exports.setDisplayName = exports.setPropTypes = exports.setStatic = exports.toClass = exports.lifecycle = exports.getContext = exports.withContext = exports.onlyUpdateForPropTypes = exports.onlyUpdateForKeys = exports.pure = exports.shouldUpdate = exports.renderNothing = exports.renderComponent = exports.branch = exports.withReducer = exports.withStateHandlers = exports.withState = exports.flattenProp = exports.renameProps = exports.renameProp = exports.defaultProps = exports.withHandlers = exports.withPropsOnChange = exports.withProps = exports.mapProps = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _shallowEqual = __webpack_require__(9);
+
+var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
+
+var _hoistNonReactStatics = __webpack_require__(30);
+
+var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
+
+var _changeEmitter = __webpack_require__(31);
+
+var _symbolObservable = __webpack_require__(32);
+
+var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var setStatic = function setStatic(key, value) {
+  return function (BaseComponent) {
+    /* eslint-disable no-param-reassign */
+    BaseComponent[key] = value;
+    /* eslint-enable no-param-reassign */
+    return BaseComponent;
+  };
+};
+
+var setDisplayName = function setDisplayName(displayName) {
+  return setStatic('displayName', displayName);
+};
+
+var getDisplayName = function getDisplayName(Component$$1) {
+  if (typeof Component$$1 === 'string') {
+    return Component$$1;
+  }
+
+  if (!Component$$1) {
+    return undefined;
+  }
+
+  return Component$$1.displayName || Component$$1.name || 'Component';
+};
+
+var wrapDisplayName = function wrapDisplayName(BaseComponent, hocName) {
+  return hocName + '(' + getDisplayName(BaseComponent) + ')';
+};
+
+var mapProps = function mapProps(propsMapper) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+    var MapProps = function MapProps(props) {
+      return factory(propsMapper(props));
+    };
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'mapProps'))(MapProps);
+    }
+    return MapProps;
+  };
+};
+
+var classCallCheck = function classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+var inherits = function inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+};
+
+var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
+  var target = {};
+
+  for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+    target[i] = obj[i];
+  }
+
+  return target;
+};
+
+var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+};
+
+var withProps = function withProps(input) {
+  var hoc = mapProps(function (props) {
+    return _extends({}, props, typeof input === 'function' ? input(props) : input);
+  });
+  if (process.env.NODE_ENV !== 'production') {
+    return function (BaseComponent) {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'withProps'))(hoc(BaseComponent));
+    };
+  }
+  return hoc;
+};
+
+var pick = function pick(obj, keys) {
+  var result = {};
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    if (obj.hasOwnProperty(key)) {
+      result[key] = obj[key];
+    }
+  }
+  return result;
+};
+
+var withPropsOnChange = function withPropsOnChange(shouldMapOrKeys, propsMapper) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+    var shouldMap = typeof shouldMapOrKeys === 'function' ? shouldMapOrKeys : function (props, nextProps) {
+      return !(0, _shallowEqual2.default)(pick(props, shouldMapOrKeys), pick(nextProps, shouldMapOrKeys));
+    };
+
+    var WithPropsOnChange = function (_Component) {
+      inherits(WithPropsOnChange, _Component);
+
+      function WithPropsOnChange() {
+        var _temp, _this, _ret;
+
+        classCallCheck(this, WithPropsOnChange);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.computedProps = propsMapper(_this.props), _temp), possibleConstructorReturn(_this, _ret);
+      }
+
+      WithPropsOnChange.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+        if (shouldMap(this.props, nextProps)) {
+          this.computedProps = propsMapper(nextProps);
+        }
+      };
+
+      WithPropsOnChange.prototype.render = function render() {
+        return factory(_extends({}, this.props, this.computedProps));
+      };
+
+      return WithPropsOnChange;
+    }(_react.Component);
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'withPropsOnChange'))(WithPropsOnChange);
+    }
+    return WithPropsOnChange;
+  };
+};
+
+var mapValues = function mapValues(obj, func) {
+  var result = {};
+  /* eslint-disable no-restricted-syntax */
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      result[key] = func(obj[key], key);
+    }
+  }
+  /* eslint-enable no-restricted-syntax */
+  return result;
+};
+
+/* eslint-disable no-console */
+var withHandlers = function withHandlers(handlers) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+
+    var WithHandlers = function (_Component) {
+      inherits(WithHandlers, _Component);
+
+      function WithHandlers() {
+        var _temp, _this, _ret;
+
+        classCallCheck(this, WithHandlers);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _initialiseProps.call(_this), _temp), possibleConstructorReturn(_this, _ret);
+      }
+
+      WithHandlers.prototype.componentWillReceiveProps = function componentWillReceiveProps() {
+        this.cachedHandlers = {};
+      };
+
+      WithHandlers.prototype.render = function render() {
+        return factory(_extends({}, this.props, this.handlers));
+      };
+
+      return WithHandlers;
+    }(_react.Component);
+
+    var _initialiseProps = function _initialiseProps() {
+      var _this2 = this;
+
+      this.cachedHandlers = {};
+      this.handlers = mapValues(typeof handlers === 'function' ? handlers(this.props) : handlers, function (createHandler, handlerName) {
+        return function () {
+          var cachedHandler = _this2.cachedHandlers[handlerName];
+          if (cachedHandler) {
+            return cachedHandler.apply(undefined, arguments);
+          }
+
+          var handler = createHandler(_this2.props);
+          _this2.cachedHandlers[handlerName] = handler;
+
+          if (process.env.NODE_ENV !== 'production' && typeof handler !== 'function') {
+            console.error(
+            // eslint-disable-line no-console
+            'withHandlers(): Expected a map of higher-order functions. ' + 'Refer to the docs for more info.');
+          }
+
+          return handler.apply(undefined, arguments);
+        };
+      });
+    };
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'withHandlers'))(WithHandlers);
+    }
+    return WithHandlers;
+  };
+};
+
+var defaultProps = function defaultProps(props) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+    var DefaultProps = function DefaultProps(ownerProps) {
+      return factory(ownerProps);
+    };
+    DefaultProps.defaultProps = props;
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'defaultProps'))(DefaultProps);
+    }
+    return DefaultProps;
+  };
+};
+
+var omit = function omit(obj, keys) {
+  var rest = objectWithoutProperties(obj, []);
+
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    if (rest.hasOwnProperty(key)) {
+      delete rest[key];
+    }
+  }
+  return rest;
+};
+
+var renameProp = function renameProp(oldName, newName) {
+  var hoc = mapProps(function (props) {
+    var _babelHelpers$extends;
+
+    return _extends({}, omit(props, [oldName]), (_babelHelpers$extends = {}, _babelHelpers$extends[newName] = props[oldName], _babelHelpers$extends));
+  });
+  if (process.env.NODE_ENV !== 'production') {
+    return function (BaseComponent) {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'renameProp'))(hoc(BaseComponent));
+    };
+  }
+  return hoc;
+};
+
+var keys = Object.keys;
+
+var mapKeys = function mapKeys(obj, func) {
+  return keys(obj).reduce(function (result, key) {
+    var val = obj[key];
+    /* eslint-disable no-param-reassign */
+    result[func(val, key)] = val;
+    /* eslint-enable no-param-reassign */
+    return result;
+  }, {});
+};
+
+var renameProps = function renameProps(nameMap) {
+  var hoc = mapProps(function (props) {
+    return _extends({}, omit(props, keys(nameMap)), mapKeys(pick(props, keys(nameMap)), function (_, oldName) {
+      return nameMap[oldName];
+    }));
+  });
+  if (process.env.NODE_ENV !== 'production') {
+    return function (BaseComponent) {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'renameProps'))(hoc(BaseComponent));
+    };
+  }
+  return hoc;
+};
+
+var flattenProp = function flattenProp(propName) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+    var FlattenProp = function FlattenProp(props) {
+      return factory(_extends({}, props, props[propName]));
+    };
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'flattenProp'))(FlattenProp);
+    }
+    return FlattenProp;
+  };
+};
+
+var withState = function withState(stateName, stateUpdaterName, initialState) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+
+    var WithState = function (_Component) {
+      inherits(WithState, _Component);
+
+      function WithState() {
+        var _temp, _this, _ret;
+
+        classCallCheck(this, WithState);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = {
+          stateValue: typeof initialState === 'function' ? initialState(_this.props) : initialState
+        }, _this.updateStateValue = function (updateFn, callback) {
+          return _this.setState(function (_ref) {
+            var stateValue = _ref.stateValue;
+            return {
+              stateValue: typeof updateFn === 'function' ? updateFn(stateValue) : updateFn
+            };
+          }, callback);
+        }, _temp), possibleConstructorReturn(_this, _ret);
+      }
+
+      WithState.prototype.render = function render() {
+        var _babelHelpers$extends;
+
+        return factory(_extends({}, this.props, (_babelHelpers$extends = {}, _babelHelpers$extends[stateName] = this.state.stateValue, _babelHelpers$extends[stateUpdaterName] = this.updateStateValue, _babelHelpers$extends)));
+      };
+
+      return WithState;
+    }(_react.Component);
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'withState'))(WithState);
+    }
+    return WithState;
+  };
+};
+
+var withStateHandlers = function withStateHandlers(initialState, stateUpdaters) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+
+    var WithStateHandlers = function (_Component) {
+      inherits(WithStateHandlers, _Component);
+
+      function WithStateHandlers() {
+        var _temp, _this, _ret;
+
+        classCallCheck(this, WithStateHandlers);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _initialiseProps.call(_this), _temp), possibleConstructorReturn(_this, _ret);
+      }
+
+      WithStateHandlers.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps, nextState) {
+        var propsChanged = nextProps !== this.props;
+        // the idea is to skip render if stateUpdater handler return undefined
+        // this allows to create no state update handlers with access to state and props
+        var stateChanged = !(0, _shallowEqual2.default)(nextState, this.state);
+        return propsChanged || stateChanged;
+      };
+
+      WithStateHandlers.prototype.render = function render() {
+        return factory(_extends({}, this.props, this.state, this.stateUpdaters));
+      };
+
+      return WithStateHandlers;
+    }(_react.Component);
+
+    var _initialiseProps = function _initialiseProps() {
+      var _this2 = this;
+
+      this.state = typeof initialState === 'function' ? initialState(this.props) : initialState;
+      this.stateUpdaters = mapValues(stateUpdaters, function (handler) {
+        return function (mayBeEvent) {
+          for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+            args[_key2 - 1] = arguments[_key2];
+          }
+
+          // Having that functional form of setState can be called async
+          // we need to persist SyntheticEvent
+          if (mayBeEvent && typeof mayBeEvent.persist === 'function') {
+            mayBeEvent.persist();
+          }
+
+          _this2.setState(function (state, props) {
+            return handler(state, props).apply(undefined, [mayBeEvent].concat(args));
+          });
+        };
+      });
+    };
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'withStateHandlers'))(WithStateHandlers);
+    }
+    return WithStateHandlers;
+  };
+};
+
+var withReducer = function withReducer(stateName, dispatchName, reducer, initialState) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+
+    var WithReducer = function (_Component) {
+      inherits(WithReducer, _Component);
+
+      function WithReducer() {
+        var _temp, _this, _ret;
+
+        classCallCheck(this, WithReducer);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = {
+          stateValue: _this.initializeStateValue()
+        }, _this.dispatch = function (action) {
+          return _this.setState(function (_ref) {
+            var stateValue = _ref.stateValue;
+            return {
+              stateValue: reducer(stateValue, action)
+            };
+          });
+        }, _temp), possibleConstructorReturn(_this, _ret);
+      }
+
+      WithReducer.prototype.initializeStateValue = function initializeStateValue() {
+        if (initialState !== undefined) {
+          return typeof initialState === 'function' ? initialState(this.props) : initialState;
+        }
+        return reducer(undefined, { type: '@@recompose/INIT' });
+      };
+
+      WithReducer.prototype.render = function render() {
+        var _babelHelpers$extends;
+
+        return factory(_extends({}, this.props, (_babelHelpers$extends = {}, _babelHelpers$extends[stateName] = this.state.stateValue, _babelHelpers$extends[dispatchName] = this.dispatch, _babelHelpers$extends)));
+      };
+
+      return WithReducer;
+    }(_react.Component);
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'withReducer'))(WithReducer);
+    }
+    return WithReducer;
+  };
+};
+
+var identity = function identity(Component$$1) {
+  return Component$$1;
+};
+
+var branch = function branch(test, left) {
+  var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : identity;
+  return function (BaseComponent) {
+    var leftFactory = void 0;
+    var rightFactory = void 0;
+    var Branch = function Branch(props) {
+      if (test(props)) {
+        leftFactory = leftFactory || (0, _react.createFactory)(left(BaseComponent));
+        return leftFactory(props);
+      }
+      rightFactory = rightFactory || (0, _react.createFactory)(right(BaseComponent));
+      return rightFactory(props);
+    };
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'branch'))(Branch);
+    }
+    return Branch;
+  };
+};
+
+var renderComponent = function renderComponent(Component$$1) {
+  return function (_) {
+    var factory = (0, _react.createFactory)(Component$$1);
+    var RenderComponent = function RenderComponent(props) {
+      return factory(props);
+    };
+    if (process.env.NODE_ENV !== 'production') {
+      RenderComponent.displayName = wrapDisplayName(Component$$1, 'renderComponent');
+    }
+    return RenderComponent;
+  };
+};
+
+var Nothing = function (_Component) {
+  inherits(Nothing, _Component);
+
+  function Nothing() {
+    classCallCheck(this, Nothing);
+    return possibleConstructorReturn(this, _Component.apply(this, arguments));
+  }
+
+  Nothing.prototype.render = function render() {
+    return null;
+  };
+
+  return Nothing;
+}(_react.Component);
+
+var renderNothing = function renderNothing(_) {
+  return Nothing;
+};
+
+var shouldUpdate = function shouldUpdate(test) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+
+    var ShouldUpdate = function (_Component) {
+      inherits(ShouldUpdate, _Component);
+
+      function ShouldUpdate() {
+        classCallCheck(this, ShouldUpdate);
+        return possibleConstructorReturn(this, _Component.apply(this, arguments));
+      }
+
+      ShouldUpdate.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
+        return test(this.props, nextProps);
+      };
+
+      ShouldUpdate.prototype.render = function render() {
+        return factory(this.props);
+      };
+
+      return ShouldUpdate;
+    }(_react.Component);
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'shouldUpdate'))(ShouldUpdate);
+    }
+    return ShouldUpdate;
+  };
+};
+
+var pure = function pure(BaseComponent) {
+  var hoc = shouldUpdate(function (props, nextProps) {
+    return !(0, _shallowEqual2.default)(props, nextProps);
+  });
+
+  if (process.env.NODE_ENV !== 'production') {
+    return setDisplayName(wrapDisplayName(BaseComponent, 'pure'))(hoc(BaseComponent));
+  }
+
+  return hoc(BaseComponent);
+};
+
+var onlyUpdateForKeys = function onlyUpdateForKeys(propKeys) {
+  var hoc = shouldUpdate(function (props, nextProps) {
+    return !(0, _shallowEqual2.default)(pick(nextProps, propKeys), pick(props, propKeys));
+  });
+
+  if (process.env.NODE_ENV !== 'production') {
+    return function (BaseComponent) {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'onlyUpdateForKeys'))(hoc(BaseComponent));
+    };
+  }
+  return hoc;
+};
+
+var onlyUpdateForPropTypes = function onlyUpdateForPropTypes(BaseComponent) {
+  var propTypes = BaseComponent.propTypes;
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (!propTypes) {
+      /* eslint-disable */
+      console.error('A component without any `propTypes` was passed to ' + '`onlyUpdateForPropTypes()`. Check the implementation of the ' + ('component with display name "' + getDisplayName(BaseComponent) + '".'));
+      /* eslint-enable */
+    }
+  }
+
+  var propKeys = Object.keys(propTypes || {});
+  var OnlyUpdateForPropTypes = onlyUpdateForKeys(propKeys)(BaseComponent);
+
+  if (process.env.NODE_ENV !== 'production') {
+    return setDisplayName(wrapDisplayName(BaseComponent, 'onlyUpdateForPropTypes'))(OnlyUpdateForPropTypes);
+  }
+  return OnlyUpdateForPropTypes;
+};
+
+var withContext = function withContext(childContextTypes, getChildContext) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+
+    var WithContext = function (_Component) {
+      inherits(WithContext, _Component);
+
+      function WithContext() {
+        var _temp, _this, _ret;
+
+        classCallCheck(this, WithContext);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.getChildContext = function () {
+          return getChildContext(_this.props);
+        }, _temp), possibleConstructorReturn(_this, _ret);
+      }
+
+      WithContext.prototype.render = function render() {
+        return factory(this.props);
+      };
+
+      return WithContext;
+    }(_react.Component);
+
+    WithContext.childContextTypes = childContextTypes;
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'withContext'))(WithContext);
+    }
+    return WithContext;
+  };
+};
+
+var getContext = function getContext(contextTypes) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+    var GetContext = function GetContext(ownerProps, context) {
+      return factory(_extends({}, ownerProps, context));
+    };
+
+    GetContext.contextTypes = contextTypes;
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'getContext'))(GetContext);
+    }
+    return GetContext;
+  };
+};
+
+/* eslint-disable no-console */
+var lifecycle = function lifecycle(spec) {
+  return function (BaseComponent) {
+    var factory = (0, _react.createFactory)(BaseComponent);
+
+    if (process.env.NODE_ENV !== 'production' && spec.hasOwnProperty('render')) {
+      console.error('lifecycle() does not support the render method; its behavior is to ' + 'pass all props and state to the base component.');
+    }
+
+    var Lifecycle = function (_Component) {
+      inherits(Lifecycle, _Component);
+
+      function Lifecycle() {
+        classCallCheck(this, Lifecycle);
+        return possibleConstructorReturn(this, _Component.apply(this, arguments));
+      }
+
+      Lifecycle.prototype.render = function render() {
+        return factory(_extends({}, this.props, this.state));
+      };
+
+      return Lifecycle;
+    }(_react.Component);
+
+    Object.keys(spec).forEach(function (hook) {
+      return Lifecycle.prototype[hook] = spec[hook];
+    });
+
+    if (process.env.NODE_ENV !== 'production') {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'lifecycle'))(Lifecycle);
+    }
+    return Lifecycle;
+  };
+};
+
+var isClassComponent = function isClassComponent(Component$$1) {
+  return Boolean(Component$$1 && Component$$1.prototype && typeof Component$$1.prototype.render === 'function');
+};
+
+var toClass = function toClass(baseComponent) {
+  if (isClassComponent(baseComponent)) {
+    return baseComponent;
+  }
+
+  var ToClass = function (_Component) {
+    inherits(ToClass, _Component);
+
+    function ToClass() {
+      classCallCheck(this, ToClass);
+      return possibleConstructorReturn(this, _Component.apply(this, arguments));
+    }
+
+    ToClass.prototype.render = function render() {
+      if (typeof baseComponent === 'string') {
+        return _react2.default.createElement(baseComponent, this.props);
+      }
+      return baseComponent(this.props, this.context);
+    };
+
+    return ToClass;
+  }(_react.Component);
+
+  ToClass.displayName = getDisplayName(baseComponent);
+  ToClass.propTypes = baseComponent.propTypes;
+  ToClass.contextTypes = baseComponent.contextTypes;
+  ToClass.defaultProps = baseComponent.defaultProps;
+
+  return ToClass;
+};
+
+var setPropTypes = function setPropTypes(propTypes) {
+  return setStatic('propTypes', propTypes);
+};
+
+function compose() {
+  for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
+    funcs[_key] = arguments[_key];
+  }
+
+  if (funcs.length === 0) {
+    return function (arg) {
+      return arg;
+    };
+  }
+
+  if (funcs.length === 1) {
+    return funcs[0];
+  }
+
+  return funcs.reduce(function (a, b) {
+    return function () {
+      return a(b.apply(undefined, arguments));
+    };
+  });
+}
+
+var createSink = function createSink(callback) {
+  return function (_Component) {
+    inherits(Sink, _Component);
+
+    function Sink() {
+      classCallCheck(this, Sink);
+      return possibleConstructorReturn(this, _Component.apply(this, arguments));
+    }
+
+    Sink.prototype.componentWillMount = function componentWillMount() {
+      callback(this.props);
+    };
+
+    Sink.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+      callback(nextProps);
+    };
+
+    Sink.prototype.render = function render() {
+      return null;
+    };
+
+    return Sink;
+  }(_react.Component);
+};
+
+var componentFromProp = function componentFromProp(propName) {
+  var Component$$1 = function Component$$1(props) {
+    return (0, _react.createElement)(props[propName], omit(props, [propName]));
+  };
+  Component$$1.displayName = 'componentFromProp(' + propName + ')';
+  return Component$$1;
+};
+
+var nest = function nest() {
+  for (var _len = arguments.length, Components = Array(_len), _key = 0; _key < _len; _key++) {
+    Components[_key] = arguments[_key];
+  }
+
+  var factories = Components.map(_react.createFactory);
+  var Nest = function Nest(_ref) {
+    var props = objectWithoutProperties(_ref, []),
+        children = _ref.children;
+    return factories.reduceRight(function (child, factory) {
+      return factory(props, child);
+    }, children);
+  };
+
+  if (process.env.NODE_ENV !== 'production') {
+    var displayNames = Components.map(getDisplayName);
+    Nest.displayName = 'nest(' + displayNames.join(', ') + ')';
+  }
+
+  return Nest;
+};
+
+var hoistStatics = function hoistStatics(higherOrderComponent) {
+  return function (BaseComponent) {
+    var NewComponent = higherOrderComponent(BaseComponent);
+    (0, _hoistNonReactStatics2.default)(NewComponent, BaseComponent);
+    return NewComponent;
+  };
+};
+
+var _config = {
+  fromESObservable: null,
+  toESObservable: null
+};
+
+var configureObservable = function configureObservable(c) {
+  _config = c;
+};
+
+var config = {
+  fromESObservable: function fromESObservable(observable) {
+    return typeof _config.fromESObservable === 'function' ? _config.fromESObservable(observable) : observable;
+  },
+  toESObservable: function toESObservable(stream) {
+    return typeof _config.toESObservable === 'function' ? _config.toESObservable(stream) : stream;
+  }
+};
+
+var componentFromStreamWithConfig = function componentFromStreamWithConfig(config$$1) {
+  return function (propsToVdom) {
+    return function (_Component) {
+      inherits(ComponentFromStream, _Component);
+
+      function ComponentFromStream() {
+        var _config$fromESObserva;
+
+        var _temp, _this, _ret;
+
+        classCallCheck(this, ComponentFromStream);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = { vdom: null }, _this.propsEmitter = (0, _changeEmitter.createChangeEmitter)(), _this.props$ = config$$1.fromESObservable((_config$fromESObserva = {
+          subscribe: function subscribe(observer) {
+            var unsubscribe = _this.propsEmitter.listen(function (props) {
+              if (props) {
+                observer.next(props);
+              } else {
+                observer.complete();
+              }
+            });
+            return { unsubscribe: unsubscribe };
+          }
+        }, _config$fromESObserva[_symbolObservable2.default] = function () {
+          return this;
+        }, _config$fromESObserva)), _this.vdom$ = config$$1.toESObservable(propsToVdom(_this.props$)), _temp), possibleConstructorReturn(_this, _ret);
+      }
+
+      // Stream of props
+
+
+      // Stream of vdom
+
+
+      ComponentFromStream.prototype.componentWillMount = function componentWillMount() {
+        var _this2 = this;
+
+        // Subscribe to child prop changes so we know when to re-render
+        this.subscription = this.vdom$.subscribe({
+          next: function next(vdom) {
+            _this2.setState({ vdom: vdom });
+          }
+        });
+        this.propsEmitter.emit(this.props);
+      };
+
+      ComponentFromStream.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+        // Receive new props from the owner
+        this.propsEmitter.emit(nextProps);
+      };
+
+      ComponentFromStream.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps, nextState) {
+        return nextState.vdom !== this.state.vdom;
+      };
+
+      ComponentFromStream.prototype.componentWillUnmount = function componentWillUnmount() {
+        // Call without arguments to complete stream
+        this.propsEmitter.emit();
+
+        // Clean-up subscription before un-mounting
+        this.subscription.unsubscribe();
+      };
+
+      ComponentFromStream.prototype.render = function render() {
+        return this.state.vdom;
+      };
+
+      return ComponentFromStream;
+    }(_react.Component);
+  };
+};
+
+var componentFromStream = function componentFromStream(propsToVdom) {
+  return componentFromStreamWithConfig(config)(propsToVdom);
+};
+
+var identity$1 = function identity(t) {
+  return t;
+};
+
+var mapPropsStreamWithConfig = function mapPropsStreamWithConfig(config$$1) {
+  var componentFromStream = componentFromStreamWithConfig({
+    fromESObservable: identity$1,
+    toESObservable: identity$1
+  });
+  return function (transform) {
+    return function (BaseComponent) {
+      var factory = (0, _react.createFactory)(BaseComponent);
+      var fromESObservable = config$$1.fromESObservable,
+          toESObservable = config$$1.toESObservable;
+
+      return componentFromStream(function (props$) {
+        var _ref;
+
+        return _ref = {
+          subscribe: function subscribe(observer) {
+            var subscription = toESObservable(transform(fromESObservable(props$))).subscribe({
+              next: function next(childProps) {
+                return observer.next(factory(childProps));
+              }
+            });
+            return {
+              unsubscribe: function unsubscribe() {
+                return subscription.unsubscribe();
+              }
+            };
+          }
+        }, _ref[_symbolObservable2.default] = function () {
+          return this;
+        }, _ref;
+      });
+    };
+  };
+};
+
+var mapPropsStream = function mapPropsStream(transform) {
+  var hoc = mapPropsStreamWithConfig(config)(transform);
+
+  if (process.env.NODE_ENV !== 'production') {
+    return function (BaseComponent) {
+      return setDisplayName(wrapDisplayName(BaseComponent, 'mapPropsStream'))(hoc(BaseComponent));
+    };
+  }
+  return hoc;
+};
+
+var createEventHandlerWithConfig = function createEventHandlerWithConfig(config$$1) {
+  return function () {
+    var _config$fromESObserva;
+
+    var emitter = (0, _changeEmitter.createChangeEmitter)();
+    var stream = config$$1.fromESObservable((_config$fromESObserva = {
+      subscribe: function subscribe(observer) {
+        var unsubscribe = emitter.listen(function (value) {
+          return observer.next(value);
+        });
+        return { unsubscribe: unsubscribe };
+      }
+    }, _config$fromESObserva[_symbolObservable2.default] = function () {
+      return this;
+    }, _config$fromESObserva));
+    return {
+      handler: emitter.emit,
+      stream: stream
+    };
+  };
+};
+
+var createEventHandler = createEventHandlerWithConfig(config);
+
+// Higher-order component helpers
+
+exports.mapProps = mapProps;
+exports.withProps = withProps;
+exports.withPropsOnChange = withPropsOnChange;
+exports.withHandlers = withHandlers;
+exports.defaultProps = defaultProps;
+exports.renameProp = renameProp;
+exports.renameProps = renameProps;
+exports.flattenProp = flattenProp;
+exports.withState = withState;
+exports.withStateHandlers = withStateHandlers;
+exports.withReducer = withReducer;
+exports.branch = branch;
+exports.renderComponent = renderComponent;
+exports.renderNothing = renderNothing;
+exports.shouldUpdate = shouldUpdate;
+exports.pure = pure;
+exports.onlyUpdateForKeys = onlyUpdateForKeys;
+exports.onlyUpdateForPropTypes = onlyUpdateForPropTypes;
+exports.withContext = withContext;
+exports.getContext = getContext;
+exports.lifecycle = lifecycle;
+exports.toClass = toClass;
+exports.setStatic = setStatic;
+exports.setPropTypes = setPropTypes;
+exports.setDisplayName = setDisplayName;
+exports.compose = compose;
+exports.getDisplayName = getDisplayName;
+exports.wrapDisplayName = wrapDisplayName;
+exports.shallowEqual = _shallowEqual2.default;
+exports.isClassComponent = isClassComponent;
+exports.createSink = createSink;
+exports.componentFromProp = componentFromProp;
+exports.nest = nest;
+exports.hoistStatics = hoistStatics;
+exports.componentFromStream = componentFromStream;
+exports.componentFromStreamWithConfig = componentFromStreamWithConfig;
+exports.mapPropsStream = mapPropsStream;
+exports.mapPropsStreamWithConfig = mapPropsStreamWithConfig;
+exports.createEventHandler = createEventHandler;
+exports.createEventHandlerWithConfig = createEventHandlerWithConfig;
+exports.setObservableConfig = configureObservable;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright 2015, Yahoo! Inc.
+ * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
+ */
+
+
+var REACT_STATICS = {
+    childContextTypes: true,
+    contextTypes: true,
+    defaultProps: true,
+    displayName: true,
+    getDefaultProps: true,
+    mixins: true,
+    propTypes: true,
+    type: true
+};
+
+var KNOWN_STATICS = {
+    name: true,
+    length: true,
+    prototype: true,
+    caller: true,
+    callee: true,
+    arguments: true,
+    arity: true
+};
+
+var defineProperty = Object.defineProperty;
+var getOwnPropertyNames = Object.getOwnPropertyNames;
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+var getPrototypeOf = Object.getPrototypeOf;
+var objectPrototype = getPrototypeOf && getPrototypeOf(Object);
+
+module.exports = function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
+    if (typeof sourceComponent !== 'string') {
+        // don't hoist over string (html) components
+
+        if (objectPrototype) {
+            var inheritedComponent = getPrototypeOf(sourceComponent);
+            if (inheritedComponent && inheritedComponent !== objectPrototype) {
+                hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
+            }
+        }
+
+        var keys = getOwnPropertyNames(sourceComponent);
+
+        if (getOwnPropertySymbols) {
+            keys = keys.concat(getOwnPropertySymbols(sourceComponent));
+        }
+
+        for (var i = 0; i < keys.length; ++i) {
+            var key = keys[i];
+            if (!REACT_STATICS[key] && !KNOWN_STATICS[key] && (!blacklist || !blacklist[key])) {
+                var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
+                try {
+                    // Avoid failures from read-only properties
+                    defineProperty(targetComponent, key, descriptor);
+                } catch (e) {}
+            }
+        }
+
+        return targetComponent;
+    }
+
+    return targetComponent;
+};
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var createChangeEmitter = exports.createChangeEmitter = function createChangeEmitter() {
+  var currentListeners = [];
+  var nextListeners = currentListeners;
+
+  function ensureCanMutateNextListeners() {
+    if (nextListeners === currentListeners) {
+      nextListeners = currentListeners.slice();
+    }
+  }
+
+  function listen(listener) {
+    if (typeof listener !== 'function') {
+      throw new Error('Expected listener to be a function.');
+    }
+
+    var isSubscribed = true;
+
+    ensureCanMutateNextListeners();
+    nextListeners.push(listener);
+
+    return function () {
+      if (!isSubscribed) {
+        return;
+      }
+
+      isSubscribed = false;
+
+      ensureCanMutateNextListeners();
+      var index = nextListeners.indexOf(listener);
+      nextListeners.splice(index, 1);
+    };
+  }
+
+  function emit() {
+    currentListeners = nextListeners;
+    var listeners = currentListeners;
+    for (var i = 0; i < listeners.length; i++) {
+      listeners[i].apply(listeners, arguments);
+    }
+  }
+
+  return {
+    listen: listen,
+    emit: emit
+  };
+};
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = __webpack_require__(33);
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global, module) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _ponyfill = __webpack_require__(36);
+
+var _ponyfill2 = _interopRequireDefault(_ponyfill);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { 'default': obj };
+}
+
+var root; /* global window */
+
+if (typeof self !== 'undefined') {
+  root = self;
+} else if (typeof window !== 'undefined') {
+  root = window;
+} else if (typeof global !== 'undefined') {
+  root = global;
+} else if (true) {
+  root = module;
+} else {
+  root = Function('return this')();
+}
+
+var result = (0, _ponyfill2['default'])(root);
+exports['default'] = result;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(34), __webpack_require__(35)(module)))
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var g;
+
+// This works in non-strict mode
+g = function () {
+	return this;
+}();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1, eval)("this");
+} catch (e) {
+	// This works if the window reference is available
+	if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (module) {
+	if (!module.webpackPolyfill) {
+		module.deprecate = function () {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if (!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function get() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function get() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports['default'] = symbolObservablePonyfill;
+function symbolObservablePonyfill(root) {
+	var result;
+	var _Symbol = root.Symbol;
+
+	if (typeof _Symbol === 'function') {
+		if (_Symbol.observable) {
+			result = _Symbol.observable;
+		} else {
+			result = _Symbol('observable');
+			_Symbol.observable = result;
+		}
+	} else {
+		result = '@@observable';
+	}
+
+	return result;
+};
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactSelect = __webpack_require__(38);
+
+var _reactSelect2 = _interopRequireDefault(_reactSelect);
+
+__webpack_require__(43);
+
+var _EventbriteEmbed = __webpack_require__(48);
+
+var _EventbriteEmbed2 = _interopRequireDefault(_EventbriteEmbed);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var getEventIdsFromFilter2 = function getEventIdsFromFilter2(filters) {
+  // if all filters are falsy, don't show anything
+  var allFiltersEmpty = !Object.values(filters).some(Boolean);
+  if (allFiltersEmpty) {
+    return null;
+  }
+
+  return window.eventsData
+  // filter the eventData based on the filters object passed in
+  .filter(function (eventData) {
+    var getFilterResultFromFilterKey = function getFilterResultFromFilterKey(key) {
+      var toCompareValue = filters[key];
+      // if the value of the filter is blank
+      // we assume that the filter is not yet selected, so return true
+      if (!toCompareValue) {
+        return true;
+      }
+      return eventData[key] === toCompareValue;
+    };
+
+    // return combined result of all filters applied to current eventData
+    return Object.keys(filters).map(getFilterResultFromFilterKey).every(Boolean);
+  }).map(function (filteredEventData) {
+    return filteredEventData.id;
+  });
+};
+
+var getEventIdsFromFilter = function getEventIdsFromFilter(_ref) {
+  var region = _ref.region;
+
+  return window.eventsData.filter(function (eventData) {
+    return eventData.region === region;
+  }).map(function (x) {
+    return x.id;
+  });
+};
+
+var getEventbriteEmbed = function getEventbriteEmbed(id) {
+  return _react2.default.createElement(
+    'li',
+    { key: id },
+    _react2.default.createElement(_EventbriteEmbed2.default, { id: id })
+  );
+};
+
+var createDropdownOptions = function createDropdownOptions(keyName) {
+  var regionList = new Set(window.eventsData.map(function (eventData) {
+    return eventData[keyName];
+  }));
+  return [].concat(_toConsumableArray(regionList)).map(function (region) {
+    return {
+      value: region,
+      label: region
+    };
+  });
+};
+
+var EventApp = function EventApp(_ref2) {
+  var appliedFilters = _ref2.appliedFilters,
+      applyFilter = _ref2.applyFilter,
+      selectedFilters = _ref2.selectedFilters,
+      regionOnSelect = _ref2.regionOnSelect,
+      localized_address_displayOnSelect = _ref2.localized_address_displayOnSelect,
+      startDateOnSelect = _ref2.startDateOnSelect;
+
+  var regionOptions = createDropdownOptions('region');
+  var localized_address_displayOptions = createDropdownOptions('localized_address_display');
+  var startDateOptions = createDropdownOptions('startDate');
+
+  var eventsId = getEventIdsFromFilter2(appliedFilters);
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'label',
+      null,
+      'State:',
+      _react2.default.createElement(_reactSelect2.default, { name: 'region-select', value: selectedFilters.region, onChange: regionOnSelect, options: regionOptions })
+    ),
+    _react2.default.createElement(
+      'label',
+      null,
+      'Venue:',
+      _react2.default.createElement(_reactSelect2.default, {
+        name: 'venue-select',
+        value: selectedFilters.localized_address_display,
+        onChange: localized_address_displayOnSelect,
+        options: localized_address_displayOptions
+      })
+    ),
+    _react2.default.createElement(
+      'label',
+      null,
+      'Date:',
+      _react2.default.createElement(_reactSelect2.default, {
+        name: 'date-select',
+        value: selectedFilters.startDate,
+        onChange: startDateOnSelect,
+        options: startDateOptions
+      })
+    ),
+    _react2.default.createElement(
+      'button',
+      { onClick: applyFilter },
+      'Apply'
+    ),
+    _react2.default.createElement(
+      'ul',
+      null,
+      eventsId && eventsId.map(getEventbriteEmbed)
+    )
+  );
+};
+
+exports.default = EventApp;
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -7936,7 +9302,7 @@ exports.defaultFilterOptions = exports.defaultClearRenderer = exports.defaultArr
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -7946,11 +9312,11 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactDom = __webpack_require__(10);
 
-var _reactInputAutosize = __webpack_require__(32);
+var _reactInputAutosize = __webpack_require__(41);
 
 var _reactInputAutosize2 = _interopRequireDefault(_reactInputAutosize);
 
-var _classnames = __webpack_require__(33);
+var _classnames = __webpack_require__(42);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -10342,7 +11708,7 @@ exports.defaultFilterOptions = filterOptions;
 exports.default = Select$1;
 
 /***/ }),
-/* 30 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10357,7 +11723,7 @@ exports.default = Select$1;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var emptyFunction = __webpack_require__(1);
+var emptyFunction = __webpack_require__(2);
 var invariant = __webpack_require__(4);
 var warning = __webpack_require__(6);
 var assign = __webpack_require__(3);
@@ -10867,7 +12233,7 @@ module.exports = function (isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 31 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10880,7 +12246,7 @@ module.exports = function (isValidElement, throwOnDirectAccess) {
 
 
 
-var emptyFunction = __webpack_require__(1);
+var emptyFunction = __webpack_require__(2);
 var invariant = __webpack_require__(4);
 var ReactPropTypesSecret = __webpack_require__(8);
 
@@ -10926,7 +12292,7 @@ module.exports = function () {
 };
 
 /***/ }),
-/* 32 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10958,7 +12324,7 @@ var _createClass = function () {
 	};
 }();
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -11200,7 +12566,7 @@ AutosizeInput.defaultProps = {
 exports.default = AutosizeInput;
 
 /***/ }),
-/* 33 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11259,13 +12625,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 })();
 
 /***/ }),
-/* 34 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(35);
+var content = __webpack_require__(44);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -11273,7 +12639,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(37)(content, options);
+var update = __webpack_require__(46)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -11290,10 +12656,10 @@ if(false) {
 }
 
 /***/ }),
-/* 35 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(36)(undefined);
+exports = module.exports = __webpack_require__(45)(undefined);
 // imports
 
 
@@ -11304,7 +12670,7 @@ exports.push([module.i, "/**\n * React Select\n * ============\n * Created by Je
 
 
 /***/ }),
-/* 36 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11386,7 +12752,7 @@ function toComment(sourceMap) {
 }
 
 /***/ }),
-/* 37 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -11442,7 +12808,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(38);
+var	fixUrls = __webpack_require__(47);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -11758,7 +13124,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 38 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11853,1344 +13219,7 @@ module.exports = function (css) {
 };
 
 /***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.setObservableConfig = exports.createEventHandlerWithConfig = exports.createEventHandler = exports.mapPropsStreamWithConfig = exports.mapPropsStream = exports.componentFromStreamWithConfig = exports.componentFromStream = exports.hoistStatics = exports.nest = exports.componentFromProp = exports.createSink = exports.isClassComponent = exports.shallowEqual = exports.wrapDisplayName = exports.getDisplayName = exports.compose = exports.setDisplayName = exports.setPropTypes = exports.setStatic = exports.toClass = exports.lifecycle = exports.getContext = exports.withContext = exports.onlyUpdateForPropTypes = exports.onlyUpdateForKeys = exports.pure = exports.shouldUpdate = exports.renderNothing = exports.renderComponent = exports.branch = exports.withReducer = exports.withStateHandlers = exports.withState = exports.flattenProp = exports.renameProps = exports.renameProp = exports.defaultProps = exports.withHandlers = exports.withPropsOnChange = exports.withProps = exports.mapProps = undefined;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _react = __webpack_require__(2);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _shallowEqual = __webpack_require__(9);
-
-var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
-
-var _hoistNonReactStatics = __webpack_require__(40);
-
-var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
-
-var _changeEmitter = __webpack_require__(41);
-
-var _symbolObservable = __webpack_require__(42);
-
-var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var setStatic = function setStatic(key, value) {
-  return function (BaseComponent) {
-    /* eslint-disable no-param-reassign */
-    BaseComponent[key] = value;
-    /* eslint-enable no-param-reassign */
-    return BaseComponent;
-  };
-};
-
-var setDisplayName = function setDisplayName(displayName) {
-  return setStatic('displayName', displayName);
-};
-
-var getDisplayName = function getDisplayName(Component$$1) {
-  if (typeof Component$$1 === 'string') {
-    return Component$$1;
-  }
-
-  if (!Component$$1) {
-    return undefined;
-  }
-
-  return Component$$1.displayName || Component$$1.name || 'Component';
-};
-
-var wrapDisplayName = function wrapDisplayName(BaseComponent, hocName) {
-  return hocName + '(' + getDisplayName(BaseComponent) + ')';
-};
-
-var mapProps = function mapProps(propsMapper) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-    var MapProps = function MapProps(props) {
-      return factory(propsMapper(props));
-    };
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'mapProps'))(MapProps);
-    }
-    return MapProps;
-  };
-};
-
-var classCallCheck = function classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
-var inherits = function inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
-
-var objectWithoutProperties = function objectWithoutProperties(obj, keys) {
-  var target = {};
-
-  for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;
-    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
-    target[i] = obj[i];
-  }
-
-  return target;
-};
-
-var possibleConstructorReturn = function possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-};
-
-var withProps = function withProps(input) {
-  var hoc = mapProps(function (props) {
-    return _extends({}, props, typeof input === 'function' ? input(props) : input);
-  });
-  if (process.env.NODE_ENV !== 'production') {
-    return function (BaseComponent) {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'withProps'))(hoc(BaseComponent));
-    };
-  }
-  return hoc;
-};
-
-var pick = function pick(obj, keys) {
-  var result = {};
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    if (obj.hasOwnProperty(key)) {
-      result[key] = obj[key];
-    }
-  }
-  return result;
-};
-
-var withPropsOnChange = function withPropsOnChange(shouldMapOrKeys, propsMapper) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-    var shouldMap = typeof shouldMapOrKeys === 'function' ? shouldMapOrKeys : function (props, nextProps) {
-      return !(0, _shallowEqual2.default)(pick(props, shouldMapOrKeys), pick(nextProps, shouldMapOrKeys));
-    };
-
-    var WithPropsOnChange = function (_Component) {
-      inherits(WithPropsOnChange, _Component);
-
-      function WithPropsOnChange() {
-        var _temp, _this, _ret;
-
-        classCallCheck(this, WithPropsOnChange);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.computedProps = propsMapper(_this.props), _temp), possibleConstructorReturn(_this, _ret);
-      }
-
-      WithPropsOnChange.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-        if (shouldMap(this.props, nextProps)) {
-          this.computedProps = propsMapper(nextProps);
-        }
-      };
-
-      WithPropsOnChange.prototype.render = function render() {
-        return factory(_extends({}, this.props, this.computedProps));
-      };
-
-      return WithPropsOnChange;
-    }(_react.Component);
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'withPropsOnChange'))(WithPropsOnChange);
-    }
-    return WithPropsOnChange;
-  };
-};
-
-var mapValues = function mapValues(obj, func) {
-  var result = {};
-  /* eslint-disable no-restricted-syntax */
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      result[key] = func(obj[key], key);
-    }
-  }
-  /* eslint-enable no-restricted-syntax */
-  return result;
-};
-
-/* eslint-disable no-console */
-var withHandlers = function withHandlers(handlers) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-
-    var WithHandlers = function (_Component) {
-      inherits(WithHandlers, _Component);
-
-      function WithHandlers() {
-        var _temp, _this, _ret;
-
-        classCallCheck(this, WithHandlers);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _initialiseProps.call(_this), _temp), possibleConstructorReturn(_this, _ret);
-      }
-
-      WithHandlers.prototype.componentWillReceiveProps = function componentWillReceiveProps() {
-        this.cachedHandlers = {};
-      };
-
-      WithHandlers.prototype.render = function render() {
-        return factory(_extends({}, this.props, this.handlers));
-      };
-
-      return WithHandlers;
-    }(_react.Component);
-
-    var _initialiseProps = function _initialiseProps() {
-      var _this2 = this;
-
-      this.cachedHandlers = {};
-      this.handlers = mapValues(typeof handlers === 'function' ? handlers(this.props) : handlers, function (createHandler, handlerName) {
-        return function () {
-          var cachedHandler = _this2.cachedHandlers[handlerName];
-          if (cachedHandler) {
-            return cachedHandler.apply(undefined, arguments);
-          }
-
-          var handler = createHandler(_this2.props);
-          _this2.cachedHandlers[handlerName] = handler;
-
-          if (process.env.NODE_ENV !== 'production' && typeof handler !== 'function') {
-            console.error(
-            // eslint-disable-line no-console
-            'withHandlers(): Expected a map of higher-order functions. ' + 'Refer to the docs for more info.');
-          }
-
-          return handler.apply(undefined, arguments);
-        };
-      });
-    };
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'withHandlers'))(WithHandlers);
-    }
-    return WithHandlers;
-  };
-};
-
-var defaultProps = function defaultProps(props) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-    var DefaultProps = function DefaultProps(ownerProps) {
-      return factory(ownerProps);
-    };
-    DefaultProps.defaultProps = props;
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'defaultProps'))(DefaultProps);
-    }
-    return DefaultProps;
-  };
-};
-
-var omit = function omit(obj, keys) {
-  var rest = objectWithoutProperties(obj, []);
-
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    if (rest.hasOwnProperty(key)) {
-      delete rest[key];
-    }
-  }
-  return rest;
-};
-
-var renameProp = function renameProp(oldName, newName) {
-  var hoc = mapProps(function (props) {
-    var _babelHelpers$extends;
-
-    return _extends({}, omit(props, [oldName]), (_babelHelpers$extends = {}, _babelHelpers$extends[newName] = props[oldName], _babelHelpers$extends));
-  });
-  if (process.env.NODE_ENV !== 'production') {
-    return function (BaseComponent) {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'renameProp'))(hoc(BaseComponent));
-    };
-  }
-  return hoc;
-};
-
-var keys = Object.keys;
-
-var mapKeys = function mapKeys(obj, func) {
-  return keys(obj).reduce(function (result, key) {
-    var val = obj[key];
-    /* eslint-disable no-param-reassign */
-    result[func(val, key)] = val;
-    /* eslint-enable no-param-reassign */
-    return result;
-  }, {});
-};
-
-var renameProps = function renameProps(nameMap) {
-  var hoc = mapProps(function (props) {
-    return _extends({}, omit(props, keys(nameMap)), mapKeys(pick(props, keys(nameMap)), function (_, oldName) {
-      return nameMap[oldName];
-    }));
-  });
-  if (process.env.NODE_ENV !== 'production') {
-    return function (BaseComponent) {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'renameProps'))(hoc(BaseComponent));
-    };
-  }
-  return hoc;
-};
-
-var flattenProp = function flattenProp(propName) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-    var FlattenProp = function FlattenProp(props) {
-      return factory(_extends({}, props, props[propName]));
-    };
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'flattenProp'))(FlattenProp);
-    }
-    return FlattenProp;
-  };
-};
-
-var withState = function withState(stateName, stateUpdaterName, initialState) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-
-    var WithState = function (_Component) {
-      inherits(WithState, _Component);
-
-      function WithState() {
-        var _temp, _this, _ret;
-
-        classCallCheck(this, WithState);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = {
-          stateValue: typeof initialState === 'function' ? initialState(_this.props) : initialState
-        }, _this.updateStateValue = function (updateFn, callback) {
-          return _this.setState(function (_ref) {
-            var stateValue = _ref.stateValue;
-            return {
-              stateValue: typeof updateFn === 'function' ? updateFn(stateValue) : updateFn
-            };
-          }, callback);
-        }, _temp), possibleConstructorReturn(_this, _ret);
-      }
-
-      WithState.prototype.render = function render() {
-        var _babelHelpers$extends;
-
-        return factory(_extends({}, this.props, (_babelHelpers$extends = {}, _babelHelpers$extends[stateName] = this.state.stateValue, _babelHelpers$extends[stateUpdaterName] = this.updateStateValue, _babelHelpers$extends)));
-      };
-
-      return WithState;
-    }(_react.Component);
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'withState'))(WithState);
-    }
-    return WithState;
-  };
-};
-
-var withStateHandlers = function withStateHandlers(initialState, stateUpdaters) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-
-    var WithStateHandlers = function (_Component) {
-      inherits(WithStateHandlers, _Component);
-
-      function WithStateHandlers() {
-        var _temp, _this, _ret;
-
-        classCallCheck(this, WithStateHandlers);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _initialiseProps.call(_this), _temp), possibleConstructorReturn(_this, _ret);
-      }
-
-      WithStateHandlers.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps, nextState) {
-        var propsChanged = nextProps !== this.props;
-        // the idea is to skip render if stateUpdater handler return undefined
-        // this allows to create no state update handlers with access to state and props
-        var stateChanged = !(0, _shallowEqual2.default)(nextState, this.state);
-        return propsChanged || stateChanged;
-      };
-
-      WithStateHandlers.prototype.render = function render() {
-        return factory(_extends({}, this.props, this.state, this.stateUpdaters));
-      };
-
-      return WithStateHandlers;
-    }(_react.Component);
-
-    var _initialiseProps = function _initialiseProps() {
-      var _this2 = this;
-
-      this.state = typeof initialState === 'function' ? initialState(this.props) : initialState;
-      this.stateUpdaters = mapValues(stateUpdaters, function (handler) {
-        return function (mayBeEvent) {
-          for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-            args[_key2 - 1] = arguments[_key2];
-          }
-
-          // Having that functional form of setState can be called async
-          // we need to persist SyntheticEvent
-          if (mayBeEvent && typeof mayBeEvent.persist === 'function') {
-            mayBeEvent.persist();
-          }
-
-          _this2.setState(function (state, props) {
-            return handler(state, props).apply(undefined, [mayBeEvent].concat(args));
-          });
-        };
-      });
-    };
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'withStateHandlers'))(WithStateHandlers);
-    }
-    return WithStateHandlers;
-  };
-};
-
-var withReducer = function withReducer(stateName, dispatchName, reducer, initialState) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-
-    var WithReducer = function (_Component) {
-      inherits(WithReducer, _Component);
-
-      function WithReducer() {
-        var _temp, _this, _ret;
-
-        classCallCheck(this, WithReducer);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = {
-          stateValue: _this.initializeStateValue()
-        }, _this.dispatch = function (action) {
-          return _this.setState(function (_ref) {
-            var stateValue = _ref.stateValue;
-            return {
-              stateValue: reducer(stateValue, action)
-            };
-          });
-        }, _temp), possibleConstructorReturn(_this, _ret);
-      }
-
-      WithReducer.prototype.initializeStateValue = function initializeStateValue() {
-        if (initialState !== undefined) {
-          return typeof initialState === 'function' ? initialState(this.props) : initialState;
-        }
-        return reducer(undefined, { type: '@@recompose/INIT' });
-      };
-
-      WithReducer.prototype.render = function render() {
-        var _babelHelpers$extends;
-
-        return factory(_extends({}, this.props, (_babelHelpers$extends = {}, _babelHelpers$extends[stateName] = this.state.stateValue, _babelHelpers$extends[dispatchName] = this.dispatch, _babelHelpers$extends)));
-      };
-
-      return WithReducer;
-    }(_react.Component);
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'withReducer'))(WithReducer);
-    }
-    return WithReducer;
-  };
-};
-
-var identity = function identity(Component$$1) {
-  return Component$$1;
-};
-
-var branch = function branch(test, left) {
-  var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : identity;
-  return function (BaseComponent) {
-    var leftFactory = void 0;
-    var rightFactory = void 0;
-    var Branch = function Branch(props) {
-      if (test(props)) {
-        leftFactory = leftFactory || (0, _react.createFactory)(left(BaseComponent));
-        return leftFactory(props);
-      }
-      rightFactory = rightFactory || (0, _react.createFactory)(right(BaseComponent));
-      return rightFactory(props);
-    };
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'branch'))(Branch);
-    }
-    return Branch;
-  };
-};
-
-var renderComponent = function renderComponent(Component$$1) {
-  return function (_) {
-    var factory = (0, _react.createFactory)(Component$$1);
-    var RenderComponent = function RenderComponent(props) {
-      return factory(props);
-    };
-    if (process.env.NODE_ENV !== 'production') {
-      RenderComponent.displayName = wrapDisplayName(Component$$1, 'renderComponent');
-    }
-    return RenderComponent;
-  };
-};
-
-var Nothing = function (_Component) {
-  inherits(Nothing, _Component);
-
-  function Nothing() {
-    classCallCheck(this, Nothing);
-    return possibleConstructorReturn(this, _Component.apply(this, arguments));
-  }
-
-  Nothing.prototype.render = function render() {
-    return null;
-  };
-
-  return Nothing;
-}(_react.Component);
-
-var renderNothing = function renderNothing(_) {
-  return Nothing;
-};
-
-var shouldUpdate = function shouldUpdate(test) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-
-    var ShouldUpdate = function (_Component) {
-      inherits(ShouldUpdate, _Component);
-
-      function ShouldUpdate() {
-        classCallCheck(this, ShouldUpdate);
-        return possibleConstructorReturn(this, _Component.apply(this, arguments));
-      }
-
-      ShouldUpdate.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
-        return test(this.props, nextProps);
-      };
-
-      ShouldUpdate.prototype.render = function render() {
-        return factory(this.props);
-      };
-
-      return ShouldUpdate;
-    }(_react.Component);
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'shouldUpdate'))(ShouldUpdate);
-    }
-    return ShouldUpdate;
-  };
-};
-
-var pure = function pure(BaseComponent) {
-  var hoc = shouldUpdate(function (props, nextProps) {
-    return !(0, _shallowEqual2.default)(props, nextProps);
-  });
-
-  if (process.env.NODE_ENV !== 'production') {
-    return setDisplayName(wrapDisplayName(BaseComponent, 'pure'))(hoc(BaseComponent));
-  }
-
-  return hoc(BaseComponent);
-};
-
-var onlyUpdateForKeys = function onlyUpdateForKeys(propKeys) {
-  var hoc = shouldUpdate(function (props, nextProps) {
-    return !(0, _shallowEqual2.default)(pick(nextProps, propKeys), pick(props, propKeys));
-  });
-
-  if (process.env.NODE_ENV !== 'production') {
-    return function (BaseComponent) {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'onlyUpdateForKeys'))(hoc(BaseComponent));
-    };
-  }
-  return hoc;
-};
-
-var onlyUpdateForPropTypes = function onlyUpdateForPropTypes(BaseComponent) {
-  var propTypes = BaseComponent.propTypes;
-
-  if (process.env.NODE_ENV !== 'production') {
-    if (!propTypes) {
-      /* eslint-disable */
-      console.error('A component without any `propTypes` was passed to ' + '`onlyUpdateForPropTypes()`. Check the implementation of the ' + ('component with display name "' + getDisplayName(BaseComponent) + '".'));
-      /* eslint-enable */
-    }
-  }
-
-  var propKeys = Object.keys(propTypes || {});
-  var OnlyUpdateForPropTypes = onlyUpdateForKeys(propKeys)(BaseComponent);
-
-  if (process.env.NODE_ENV !== 'production') {
-    return setDisplayName(wrapDisplayName(BaseComponent, 'onlyUpdateForPropTypes'))(OnlyUpdateForPropTypes);
-  }
-  return OnlyUpdateForPropTypes;
-};
-
-var withContext = function withContext(childContextTypes, getChildContext) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-
-    var WithContext = function (_Component) {
-      inherits(WithContext, _Component);
-
-      function WithContext() {
-        var _temp, _this, _ret;
-
-        classCallCheck(this, WithContext);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.getChildContext = function () {
-          return getChildContext(_this.props);
-        }, _temp), possibleConstructorReturn(_this, _ret);
-      }
-
-      WithContext.prototype.render = function render() {
-        return factory(this.props);
-      };
-
-      return WithContext;
-    }(_react.Component);
-
-    WithContext.childContextTypes = childContextTypes;
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'withContext'))(WithContext);
-    }
-    return WithContext;
-  };
-};
-
-var getContext = function getContext(contextTypes) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-    var GetContext = function GetContext(ownerProps, context) {
-      return factory(_extends({}, ownerProps, context));
-    };
-
-    GetContext.contextTypes = contextTypes;
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'getContext'))(GetContext);
-    }
-    return GetContext;
-  };
-};
-
-/* eslint-disable no-console */
-var lifecycle = function lifecycle(spec) {
-  return function (BaseComponent) {
-    var factory = (0, _react.createFactory)(BaseComponent);
-
-    if (process.env.NODE_ENV !== 'production' && spec.hasOwnProperty('render')) {
-      console.error('lifecycle() does not support the render method; its behavior is to ' + 'pass all props and state to the base component.');
-    }
-
-    var Lifecycle = function (_Component) {
-      inherits(Lifecycle, _Component);
-
-      function Lifecycle() {
-        classCallCheck(this, Lifecycle);
-        return possibleConstructorReturn(this, _Component.apply(this, arguments));
-      }
-
-      Lifecycle.prototype.render = function render() {
-        return factory(_extends({}, this.props, this.state));
-      };
-
-      return Lifecycle;
-    }(_react.Component);
-
-    Object.keys(spec).forEach(function (hook) {
-      return Lifecycle.prototype[hook] = spec[hook];
-    });
-
-    if (process.env.NODE_ENV !== 'production') {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'lifecycle'))(Lifecycle);
-    }
-    return Lifecycle;
-  };
-};
-
-var isClassComponent = function isClassComponent(Component$$1) {
-  return Boolean(Component$$1 && Component$$1.prototype && typeof Component$$1.prototype.render === 'function');
-};
-
-var toClass = function toClass(baseComponent) {
-  if (isClassComponent(baseComponent)) {
-    return baseComponent;
-  }
-
-  var ToClass = function (_Component) {
-    inherits(ToClass, _Component);
-
-    function ToClass() {
-      classCallCheck(this, ToClass);
-      return possibleConstructorReturn(this, _Component.apply(this, arguments));
-    }
-
-    ToClass.prototype.render = function render() {
-      if (typeof baseComponent === 'string') {
-        return _react2.default.createElement(baseComponent, this.props);
-      }
-      return baseComponent(this.props, this.context);
-    };
-
-    return ToClass;
-  }(_react.Component);
-
-  ToClass.displayName = getDisplayName(baseComponent);
-  ToClass.propTypes = baseComponent.propTypes;
-  ToClass.contextTypes = baseComponent.contextTypes;
-  ToClass.defaultProps = baseComponent.defaultProps;
-
-  return ToClass;
-};
-
-var setPropTypes = function setPropTypes(propTypes) {
-  return setStatic('propTypes', propTypes);
-};
-
-function compose() {
-  for (var _len = arguments.length, funcs = Array(_len), _key = 0; _key < _len; _key++) {
-    funcs[_key] = arguments[_key];
-  }
-
-  if (funcs.length === 0) {
-    return function (arg) {
-      return arg;
-    };
-  }
-
-  if (funcs.length === 1) {
-    return funcs[0];
-  }
-
-  return funcs.reduce(function (a, b) {
-    return function () {
-      return a(b.apply(undefined, arguments));
-    };
-  });
-}
-
-var createSink = function createSink(callback) {
-  return function (_Component) {
-    inherits(Sink, _Component);
-
-    function Sink() {
-      classCallCheck(this, Sink);
-      return possibleConstructorReturn(this, _Component.apply(this, arguments));
-    }
-
-    Sink.prototype.componentWillMount = function componentWillMount() {
-      callback(this.props);
-    };
-
-    Sink.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-      callback(nextProps);
-    };
-
-    Sink.prototype.render = function render() {
-      return null;
-    };
-
-    return Sink;
-  }(_react.Component);
-};
-
-var componentFromProp = function componentFromProp(propName) {
-  var Component$$1 = function Component$$1(props) {
-    return (0, _react.createElement)(props[propName], omit(props, [propName]));
-  };
-  Component$$1.displayName = 'componentFromProp(' + propName + ')';
-  return Component$$1;
-};
-
-var nest = function nest() {
-  for (var _len = arguments.length, Components = Array(_len), _key = 0; _key < _len; _key++) {
-    Components[_key] = arguments[_key];
-  }
-
-  var factories = Components.map(_react.createFactory);
-  var Nest = function Nest(_ref) {
-    var props = objectWithoutProperties(_ref, []),
-        children = _ref.children;
-    return factories.reduceRight(function (child, factory) {
-      return factory(props, child);
-    }, children);
-  };
-
-  if (process.env.NODE_ENV !== 'production') {
-    var displayNames = Components.map(getDisplayName);
-    Nest.displayName = 'nest(' + displayNames.join(', ') + ')';
-  }
-
-  return Nest;
-};
-
-var hoistStatics = function hoistStatics(higherOrderComponent) {
-  return function (BaseComponent) {
-    var NewComponent = higherOrderComponent(BaseComponent);
-    (0, _hoistNonReactStatics2.default)(NewComponent, BaseComponent);
-    return NewComponent;
-  };
-};
-
-var _config = {
-  fromESObservable: null,
-  toESObservable: null
-};
-
-var configureObservable = function configureObservable(c) {
-  _config = c;
-};
-
-var config = {
-  fromESObservable: function fromESObservable(observable) {
-    return typeof _config.fromESObservable === 'function' ? _config.fromESObservable(observable) : observable;
-  },
-  toESObservable: function toESObservable(stream) {
-    return typeof _config.toESObservable === 'function' ? _config.toESObservable(stream) : stream;
-  }
-};
-
-var componentFromStreamWithConfig = function componentFromStreamWithConfig(config$$1) {
-  return function (propsToVdom) {
-    return function (_Component) {
-      inherits(ComponentFromStream, _Component);
-
-      function ComponentFromStream() {
-        var _config$fromESObserva;
-
-        var _temp, _this, _ret;
-
-        classCallCheck(this, ComponentFromStream);
-
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        return _ret = (_temp = (_this = possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = { vdom: null }, _this.propsEmitter = (0, _changeEmitter.createChangeEmitter)(), _this.props$ = config$$1.fromESObservable((_config$fromESObserva = {
-          subscribe: function subscribe(observer) {
-            var unsubscribe = _this.propsEmitter.listen(function (props) {
-              if (props) {
-                observer.next(props);
-              } else {
-                observer.complete();
-              }
-            });
-            return { unsubscribe: unsubscribe };
-          }
-        }, _config$fromESObserva[_symbolObservable2.default] = function () {
-          return this;
-        }, _config$fromESObserva)), _this.vdom$ = config$$1.toESObservable(propsToVdom(_this.props$)), _temp), possibleConstructorReturn(_this, _ret);
-      }
-
-      // Stream of props
-
-
-      // Stream of vdom
-
-
-      ComponentFromStream.prototype.componentWillMount = function componentWillMount() {
-        var _this2 = this;
-
-        // Subscribe to child prop changes so we know when to re-render
-        this.subscription = this.vdom$.subscribe({
-          next: function next(vdom) {
-            _this2.setState({ vdom: vdom });
-          }
-        });
-        this.propsEmitter.emit(this.props);
-      };
-
-      ComponentFromStream.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-        // Receive new props from the owner
-        this.propsEmitter.emit(nextProps);
-      };
-
-      ComponentFromStream.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps, nextState) {
-        return nextState.vdom !== this.state.vdom;
-      };
-
-      ComponentFromStream.prototype.componentWillUnmount = function componentWillUnmount() {
-        // Call without arguments to complete stream
-        this.propsEmitter.emit();
-
-        // Clean-up subscription before un-mounting
-        this.subscription.unsubscribe();
-      };
-
-      ComponentFromStream.prototype.render = function render() {
-        return this.state.vdom;
-      };
-
-      return ComponentFromStream;
-    }(_react.Component);
-  };
-};
-
-var componentFromStream = function componentFromStream(propsToVdom) {
-  return componentFromStreamWithConfig(config)(propsToVdom);
-};
-
-var identity$1 = function identity(t) {
-  return t;
-};
-
-var mapPropsStreamWithConfig = function mapPropsStreamWithConfig(config$$1) {
-  var componentFromStream = componentFromStreamWithConfig({
-    fromESObservable: identity$1,
-    toESObservable: identity$1
-  });
-  return function (transform) {
-    return function (BaseComponent) {
-      var factory = (0, _react.createFactory)(BaseComponent);
-      var fromESObservable = config$$1.fromESObservable,
-          toESObservable = config$$1.toESObservable;
-
-      return componentFromStream(function (props$) {
-        var _ref;
-
-        return _ref = {
-          subscribe: function subscribe(observer) {
-            var subscription = toESObservable(transform(fromESObservable(props$))).subscribe({
-              next: function next(childProps) {
-                return observer.next(factory(childProps));
-              }
-            });
-            return {
-              unsubscribe: function unsubscribe() {
-                return subscription.unsubscribe();
-              }
-            };
-          }
-        }, _ref[_symbolObservable2.default] = function () {
-          return this;
-        }, _ref;
-      });
-    };
-  };
-};
-
-var mapPropsStream = function mapPropsStream(transform) {
-  var hoc = mapPropsStreamWithConfig(config)(transform);
-
-  if (process.env.NODE_ENV !== 'production') {
-    return function (BaseComponent) {
-      return setDisplayName(wrapDisplayName(BaseComponent, 'mapPropsStream'))(hoc(BaseComponent));
-    };
-  }
-  return hoc;
-};
-
-var createEventHandlerWithConfig = function createEventHandlerWithConfig(config$$1) {
-  return function () {
-    var _config$fromESObserva;
-
-    var emitter = (0, _changeEmitter.createChangeEmitter)();
-    var stream = config$$1.fromESObservable((_config$fromESObserva = {
-      subscribe: function subscribe(observer) {
-        var unsubscribe = emitter.listen(function (value) {
-          return observer.next(value);
-        });
-        return { unsubscribe: unsubscribe };
-      }
-    }, _config$fromESObserva[_symbolObservable2.default] = function () {
-      return this;
-    }, _config$fromESObserva));
-    return {
-      handler: emitter.emit,
-      stream: stream
-    };
-  };
-};
-
-var createEventHandler = createEventHandlerWithConfig(config);
-
-// Higher-order component helpers
-
-exports.mapProps = mapProps;
-exports.withProps = withProps;
-exports.withPropsOnChange = withPropsOnChange;
-exports.withHandlers = withHandlers;
-exports.defaultProps = defaultProps;
-exports.renameProp = renameProp;
-exports.renameProps = renameProps;
-exports.flattenProp = flattenProp;
-exports.withState = withState;
-exports.withStateHandlers = withStateHandlers;
-exports.withReducer = withReducer;
-exports.branch = branch;
-exports.renderComponent = renderComponent;
-exports.renderNothing = renderNothing;
-exports.shouldUpdate = shouldUpdate;
-exports.pure = pure;
-exports.onlyUpdateForKeys = onlyUpdateForKeys;
-exports.onlyUpdateForPropTypes = onlyUpdateForPropTypes;
-exports.withContext = withContext;
-exports.getContext = getContext;
-exports.lifecycle = lifecycle;
-exports.toClass = toClass;
-exports.setStatic = setStatic;
-exports.setPropTypes = setPropTypes;
-exports.setDisplayName = setDisplayName;
-exports.compose = compose;
-exports.getDisplayName = getDisplayName;
-exports.wrapDisplayName = wrapDisplayName;
-exports.shallowEqual = _shallowEqual2.default;
-exports.isClassComponent = isClassComponent;
-exports.createSink = createSink;
-exports.componentFromProp = componentFromProp;
-exports.nest = nest;
-exports.hoistStatics = hoistStatics;
-exports.componentFromStream = componentFromStream;
-exports.componentFromStreamWithConfig = componentFromStreamWithConfig;
-exports.mapPropsStream = mapPropsStream;
-exports.mapPropsStreamWithConfig = mapPropsStreamWithConfig;
-exports.createEventHandler = createEventHandler;
-exports.createEventHandlerWithConfig = createEventHandlerWithConfig;
-exports.setObservableConfig = configureObservable;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright 2015, Yahoo! Inc.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */
-
-
-var REACT_STATICS = {
-    childContextTypes: true,
-    contextTypes: true,
-    defaultProps: true,
-    displayName: true,
-    getDefaultProps: true,
-    mixins: true,
-    propTypes: true,
-    type: true
-};
-
-var KNOWN_STATICS = {
-    name: true,
-    length: true,
-    prototype: true,
-    caller: true,
-    callee: true,
-    arguments: true,
-    arity: true
-};
-
-var defineProperty = Object.defineProperty;
-var getOwnPropertyNames = Object.getOwnPropertyNames;
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-var getPrototypeOf = Object.getPrototypeOf;
-var objectPrototype = getPrototypeOf && getPrototypeOf(Object);
-
-module.exports = function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
-    if (typeof sourceComponent !== 'string') {
-        // don't hoist over string (html) components
-
-        if (objectPrototype) {
-            var inheritedComponent = getPrototypeOf(sourceComponent);
-            if (inheritedComponent && inheritedComponent !== objectPrototype) {
-                hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
-            }
-        }
-
-        var keys = getOwnPropertyNames(sourceComponent);
-
-        if (getOwnPropertySymbols) {
-            keys = keys.concat(getOwnPropertySymbols(sourceComponent));
-        }
-
-        for (var i = 0; i < keys.length; ++i) {
-            var key = keys[i];
-            if (!REACT_STATICS[key] && !KNOWN_STATICS[key] && (!blacklist || !blacklist[key])) {
-                var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
-                try {
-                    // Avoid failures from read-only properties
-                    defineProperty(targetComponent, key, descriptor);
-                } catch (e) {}
-            }
-        }
-
-        return targetComponent;
-    }
-
-    return targetComponent;
-};
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var createChangeEmitter = exports.createChangeEmitter = function createChangeEmitter() {
-  var currentListeners = [];
-  var nextListeners = currentListeners;
-
-  function ensureCanMutateNextListeners() {
-    if (nextListeners === currentListeners) {
-      nextListeners = currentListeners.slice();
-    }
-  }
-
-  function listen(listener) {
-    if (typeof listener !== 'function') {
-      throw new Error('Expected listener to be a function.');
-    }
-
-    var isSubscribed = true;
-
-    ensureCanMutateNextListeners();
-    nextListeners.push(listener);
-
-    return function () {
-      if (!isSubscribed) {
-        return;
-      }
-
-      isSubscribed = false;
-
-      ensureCanMutateNextListeners();
-      var index = nextListeners.indexOf(listener);
-      nextListeners.splice(index, 1);
-    };
-  }
-
-  function emit() {
-    currentListeners = nextListeners;
-    var listeners = currentListeners;
-    for (var i = 0; i < listeners.length; i++) {
-      listeners[i].apply(listeners, arguments);
-    }
-  }
-
-  return {
-    listen: listen,
-    emit: emit
-  };
-};
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = __webpack_require__(43);
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global, module) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _ponyfill = __webpack_require__(46);
-
-var _ponyfill2 = _interopRequireDefault(_ponyfill);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-var root; /* global window */
-
-if (typeof self !== 'undefined') {
-  root = self;
-} else if (typeof window !== 'undefined') {
-  root = window;
-} else if (typeof global !== 'undefined') {
-  root = global;
-} else if (true) {
-  root = module;
-} else {
-  root = Function('return this')();
-}
-
-var result = (0, _ponyfill2['default'])(root);
-exports['default'] = result;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44), __webpack_require__(45)(module)))
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var g;
-
-// This works in non-strict mode
-g = function () {
-	return this;
-}();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
-} catch (e) {
-	// This works if the window reference is available
-	if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function (module) {
-	if (!module.webpackPolyfill) {
-		module.deprecate = function () {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if (!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function get() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function get() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-/***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports['default'] = symbolObservablePonyfill;
-function symbolObservablePonyfill(root) {
-	var result;
-	var _Symbol = root.Symbol;
-
-	if (typeof _Symbol === 'function') {
-		if (_Symbol.observable) {
-			result = _Symbol.observable;
-		} else {
-			result = _Symbol('observable');
-			_Symbol.observable = result;
-		}
-	} else {
-		result = '@@observable';
-	}
-
-	return result;
-};
-
-/***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13200,7 +13229,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
