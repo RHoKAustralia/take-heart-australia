@@ -16,6 +16,9 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const FormData = require('form-data');
 
+app.use(morgan('combined'))
+app.use(express.static(`${__dirname}/public`))
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
@@ -28,8 +31,7 @@ app.use(session({
   cookie: { maxAge: 60000 }
 }))
 
-app.use(morgan('combined'))
-app.use(express.static(`${__dirname}/public`))
+
 
 app.get('/', (req, res) => {
   res.send('oh hai')
