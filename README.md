@@ -29,7 +29,7 @@ There are at least 9 developers working on this during the weekend. So the codeb
 * [Donation](#donation)
 * [Database](#database)
 
-## Homepage
+### Homepage
 
 Homepage contains `bootstrap` and `jquery`, some features are slider and video pop up. There is donation section in the page, and navigation bar which should be used on every page 
 
@@ -49,7 +49,7 @@ Todo list for homepage:
 - [ ] Proper link for navigation bar
 - [ ] In general, cleaning up the Homepage and fill in with real data
 
-## Training
+### Training
 
 Routes:
 * `/training`
@@ -81,20 +81,20 @@ Files:
   * `src/training/`, containing javascript files for the client side and it contains `React`. It will be transpiled and bundled to `public/js/training.bundle.js` by running `webpack`.
 
 Todo list for `/training`:
-* [ ] Create 3 tabs in the page for `corporate`, `invidividual`, and `community`
+* [ ] Create 3 tabs in the page for `corporate`, `individual`, and `community`
 * [ ] Moving `/training-community.html` into `community` tab
 * [ ] Creating `corporate` form
 * [ ] Moving the contents from `app` folder into `src` to tidy up project structure
 * [ ] Adding navigation bar
 * [ ] The approach taken by making multiple request to *Eventbrite* before giving response to the page in the server, is not ideal. The page loads too slow since we're making multiple linear requests beforehand (not parallel). There should be a caching layer in here, or better implementation
 
-## Donation
+### Donation
 
 Routes:
 * `/donation`
 * `/donation/*`
 * `/donate_secure_pay`
 
-## Database
+### Database
 
 Using `postgresql`
