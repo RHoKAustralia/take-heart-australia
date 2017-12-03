@@ -81,12 +81,12 @@ Files:
   * `src/training/`, containing javascript files for the client side and it contains `React`. It will be transpiled and bundled to `public/js/training.bundle.js` by running `webpack`.
 
 Todo list for `/training`:
-* Create 3 tabs in the page for `corporate`, `invidividual`, and `community`
-* Moving `/training-community.html` into `community` tab
-* Creating `corporate` form
-* Moving the contents from `app` folder into `src` to tidy up project structure
-* Adding navigation bar
-* The approach taken by making multiple request to *Eventbrite* before giving response to the page in the server, is not ideal. The page loads too slow since we're making multiple linear requests beforehand (not parallel). There should be a caching layer in here, or better implementation
+* [ ] Create 3 tabs in the page for `corporate`, `invidividual`, and `community`
+* [ ] Moving `/training-community.html` into `community` tab
+* [ ] Creating `corporate` form
+* [ ] Moving the contents from `app` folder into `src` to tidy up project structure
+* [ ] Adding navigation bar
+* [ ] The approach taken by making multiple request to *Eventbrite* before giving response to the page in the server, is not ideal. The page loads too slow since we're making multiple linear requests beforehand (not parallel). There should be a caching layer in here, or better implementation
 
 ## Donation
 
