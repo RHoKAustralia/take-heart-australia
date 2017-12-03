@@ -9,12 +9,6 @@ require('node-jsx').install();
 const morgan = require('morgan');
 
 const app = express();
-const fetch = require('node-fetch');
-
-const queryString = require('query-string');
-const cheerio = require('cheerio');
-const fs = require('fs');
-const FormData = require('form-data');
 
 app.use(morgan('combined'));
 app.use(express.static(`${__dirname}/public`));
@@ -38,22 +32,38 @@ app.get('/', (req, res) => {
   res.send('oh hai');
 });
 
+/* Start of Training Routes */
+const fetch = require('node-fetch');
+
+const queryString = require('query-string');
+const cheerio = require('cheerio');
+const fs = require('fs');
+const FormData = require('form-data');
+
 app.get('/training', function(req, res) {
+  // declare variables to make a request to Eventbrite API
+  // https://www.eventbrite.com/developer/v3/
   const apiUrl = 'https://www.eventbriteapi.com/v3/users/me/owned_events';
   const EVENTBRITE_TOKEN = 'QHZIGQMTINSSRO2NP7QU';
   const tokenQuery = { token: EVENTBRITE_TOKEN };
+  // only select 'live' events
   const getEventsQuery = Object.assign({}, tokenQuery, { status: 'live' });
 
   let eventsData;
 
+  // first, get the list of owned events and live by take-heart-australia Eventbrite account
+  // https://www.eventbrite.com/developer/v3/endpoints/users/#ebapi-get-users-id-owned-events
+  // https://www.eventbrite.com/developer/v3/quickstart/
   const url = `${apiUrl}?${queryString.stringify(getEventsQuery)}`;
   const ids = fetch(url)
     .then(resp => resp.json())
+    // here `json` is the events data returned from `Eventbrite`
+    // it will return an Array of `Event` object https://www.eventbrite.com/developer/v3/response_formats/event/#ebapi-std:format-event
     .then(json => {
-      // store the eventData
+      // store the eventsData for later usage
       eventsData = json.events;
 
-      // get location data for each event
+      // get venue_id for each event
       const venueIds = json.events.map(event => event.venue_id);
       const batchedRequests = venueIds.map(venueId => {
         return {
@@ -61,6 +71,9 @@ app.get('/training', function(req, res) {
           relative_url: `venues/${venueId}`
         };
       });
+
+      // create a batch request to Eventbrite API to retrieve address data from venue_id
+      // https://www.eventbrite.com/developer/v3/api_overview/batching/
       const batchUrl = `https://www.eventbriteapi.com/v3/batch/?${queryString.stringify(tokenQuery)}`;
 
       const form = new FormData();
@@ -79,21 +92,28 @@ app.get('/training', function(req, res) {
         eventsData[index].address = parsedBody.address;
       });
 
+      // read the html for training.html and parse it using cheerio
       var html = fs.readFileSync(__dirname + '/app/html/training.html');
       var $ = cheerio.load(html);
 
       // process the event data, and transform them to only contains data that client needs
+      // from `Event` + `address` field, to just `{ id, startDate, region, localized_address_display }`
+      // this will be the one that send to client
       const processedEventData = eventsData.map(eventData => {
         const { id, start: { local: startDate }, address: { region, localized_address_display } } = eventData;
         return { id, startDate, region, localized_address_display };
       });
 
+      // inject the processed data into the response `html` using cheerio
       const eventDataInject = `<script>window.eventsData = ${JSON.stringify(processedEventData)}</script>`;
       $('body').prepend(eventDataInject);
 
+      // then send the training.html with injected-processed-upcoming-events-data from Eventbrite
       res.send($.html());
     });
 });
+
+/* End of Training routes */
 
 const DonationPage = require('./pages/donation.jsx')
 const Donation = require('./src/donation.js')
