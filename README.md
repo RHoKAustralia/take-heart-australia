@@ -3,6 +3,8 @@
 This is a project created during RHoK Sydney Summer Hackathon 2017. (25th-26th Nov)
 There are at least 9 developers working on this during the weekend. So the codebase is a bit messy, and requires refactor and tidying up before continuing the work.
 
+This is currently hosted in AWS elastic beanstack(?), and you need to deploy manually every time you want to make changes to the website **Need more documentation here**
+
 ## How to run the project
 
 * #### Install dependencies
@@ -146,7 +148,9 @@ Todo list:
 
 ### Database
 
-Using `postgresql`. This is for storing all the form data in the page (`/training`, `/donation`) about users' data. There are 2 tables exist at the moment, for `CORPORATE` and `INDIVIDUAL`
+Using `postgresql`. This is for storing all the form data in the page (`/training`, `/donation`) about users' data. There are 2 tables exist at the moment, for `CORPORATE` and `INDIVIDUAL`.
+
+The database is also hosted in AWS **Need more documentation here**
 
 Routes:
 
