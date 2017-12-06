@@ -29,6 +29,8 @@ There are at least 9 developers working on this during the weekend. So the codeb
 * [Donation](#donation)
 * [Database](#database)
 
+---
+
 ### Homepage
 
 Homepage contains `bootstrap` and `jquery`, some features are slider and video pop up. There is donation section in the page, and navigation bar which should be used on every page 
@@ -49,17 +51,36 @@ Todo list for homepage:
 - [ ] Proper link for navigation bar
 - [ ] In general, cleaning up the Homepage and fill in with real data
 
+---
+
 ### Training
 
 Routes:
 * `/training`
 * `/training-community.html`
 
-Training page was planned to be a single page with 3 tabs `corporate`, `individual`, and `community chamption(?)`. Inside of each tab, there should be a form.
-* Corporate: Targeted for companies, user from companies should be able to fill in their data to ask for training request. After the form is submitted, it should be stored inside database **(haven't been implemented)**
-* Community champion (`/training-community.html`): Same logic with corporate
-* Individual (`/training`): Targeted for any individual who wants to join public training. This tab contains *Eventbrite* implementations to facilitate event lookups.
-To test *Eventbrite* implementation, log in to `take-heart-australia` *Eventbrite* account, then create a sample event, and then select some values for the dropdown and click `Apply` button, it should show up the sample event that you just created.
+Training page was planned to be a single page with 3 tabs [Corporate](#corporate), [Individual](#individual), and [Community champion](#community-champion). Inside of each tab, there should be a form.
+
+#### Corporate
+
+Route: *does not exist yet*
+
+Targeted for companies, user from companies should be able to fill in their data to ask for training request. After the form is submitted, it should be stored inside database **(haven't been implemented)**
+
+#### Community champion
+
+Route: (`/training-community.html`)
+
+Same logic with corporate
+
+#### Individual
+
+Route: (`/training`)
+
+Targeted for any individual who wants to join public training. This tab contains *Eventbrite* implementations to facilitate event lookups.
+
+To test *Eventbrite* implementation, log in to `take-heart-australia` *Eventbrite* account, then create a sample event, then back to the node server (`/training`) and select some values for the dropdown and click `Apply` button, it should show up the sample event that you just created.
+
 How it works:
   * **Server**:
     * When the page loaded, the server will make a request to *Eventbrite* API using *take-heart-australia* API Token
@@ -88,13 +109,52 @@ Todo list for `/training`:
 * [ ] Adding navigation bar
 * [ ] The approach taken by making multiple request to *Eventbrite* before giving response to the page in the server, is not ideal. The page loads too slow since we're making multiple linear requests beforehand (not parallel). There should be a caching layer in here, or better implementation
 
+---
+
 ### Donation
 
 Routes:
 * `/donation`
-* `/donation/*`
+* `/donation/options*`
+* `/donation/details*`
+* `/donation/payment*`
+* `/donation/confirmation*`
 * `/donate_secure_pay`
+
+Donation is connected to Stripe API, to make donation. If you fill the form and filling the credit card detail, it should send the payment to stripe **(hasn't been tested yet)**.
+
+Files:
+
+* `src/donation.js`
+* `src/donation/*`
+* `pages/donation.jsx`
+* `public/css/donation.css`
+* `public/css/donation2.css`
+* `public/css/payment.css`
+* `public/imgs/*`
+* `public/js/donation.js`
+* `public/js/donation.bundle.js` (Generated from `webpack`)
+* `public/js/payment.js`
+
+Todo list:
+* [ ] Test Stripe API
+* [ ] Form should be connected to database (?)
+* [ ] Remove `node-jsx` (change  `pages/donation.jsx` to just plain HTML, this is not how react is supposed to be used)
+* [ ] Refactor how the scripts structured in this part, should be moved all to `src/donation` folder, and then using `webpack` to be generated to `public/js/donation.bundle.js`
+
+---
 
 ### Database
 
-Using `postgresql`
+Using `postgresql`. This is for storing all the form data in the page (`/training`, `/donation`) about users' data. There are 2 tables exist at the moment, for `CORPORATE` and `INDIVIDUAL`
+
+Routes:
+
+* `/dbtest`
+
+Files:
+
+* `migrations/*`
+
+Todo list:
+* [ ] Create endpoint in express to handle post data, and put it inside database, so all forms can be connected to the database
