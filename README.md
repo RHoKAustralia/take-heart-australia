@@ -139,7 +139,7 @@ Files:
 Todo list:
 * [ ] Test Stripe API
 * [ ] Form should be connected to database (?)
-* [ ] Remove `node-jsx` (change  `pages/donation.jsx` to just plain HTML, this is not how react is supposed to be used)
+* [ ] Remove `node-jsx` (change  `pages/donation.jsx` to just plain HTML, this is not how `React` or `jsx` is supposed to be used)
 * [ ] Refactor how the scripts structured in this part, should be moved all to `src/donation` folder, and then using `webpack` to be generated to `public/js/donation.bundle.js`
 
 ---
